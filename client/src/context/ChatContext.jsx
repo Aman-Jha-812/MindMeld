@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import * as chatService from '../services/chatService';
 import api from '../services/api';
+import { useAuth } from './AuthContext';
 import { io } from 'socket.io-client';
 
 const ChatContext = createContext(null);
@@ -12,10 +13,11 @@ export const ChatProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [typingUsers, setTypingUsers] = useState({});
   const socketRef = useRef(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (!token) return;
+    if (!token || !user) return;
     const socket = io(import.meta.env.VITE_API_URL, { auth: { token }, transports: ['websocket', 'polling'] });
     socketRef.current = socket;
     socket.on('new_message', (message) => {
@@ -34,7 +36,7 @@ export const ChatProvider = ({ children }) => {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, []);
+  }, [user]);
 
   const joinChannel = useCallback((channelId) => {
     socketRef.current?.emit('join_channel', { channelId });

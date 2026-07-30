@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
+import { useAuth } from '../context/AuthContext';
 
 const useSocket = () => {
   const socketRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (!token) return;
+    if (!token || !user) return;
 
     const socket = io(import.meta.env.VITE_API_URL, {
       auth: { token },
@@ -36,7 +38,7 @@ const useSocket = () => {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, []);
+  }, [user]);
 
   return { socket: socketRef.current, isConnected };
 };
