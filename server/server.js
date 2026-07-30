@@ -20,6 +20,7 @@ const start = async () => {
       console.log(
         `Server running in ${process.env.NODE_ENV} mode on http://localhost:${PORT}`
       );
+      console.log(`SMTP configured: ${process.env.SMTP_USER ? 'yes' : 'no'}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error.message);
