@@ -254,13 +254,13 @@ const AppLayout = () => {
             </button>
           )}
 
-          {/* Mobile Right Sidebar Overlay */}
+          {/* Mobile Right Sidebar Overlay — top drawer (stays above input) */}
           {mobileRightSidebar && (
             <div className="fixed inset-0 z-50 lg:hidden">
               <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileRightSidebar(false)} />
-              <aside className="fixed right-0 top-0 h-screen w-72 bg-dark-800 border-l border-dark-700 overflow-y-auto shadow-2xl animate-slideInRight">
-                <div className="flex items-center justify-between px-5 py-5 border-b border-dark-700">
-                  <h2 className="text-lg font-semibold text-dark-100 truncate">{activeWorkspace.name}</h2>
+              <div className="fixed top-16 left-0 right-0 max-h-[50vh] bg-dark-800 shadow-2xl overflow-y-auto rounded-b-xl animate-slideDown">
+                <div className="sticky top-0 bg-dark-800 px-5 py-4 border-b border-dark-700 flex items-center justify-between z-10">
+                  <h2 className="text-lg font-semibold text-dark-100 truncate">{activeWorkspace?.name}</h2>
                   <button
                     onClick={() => setMobileRightSidebar(false)}
                     className="p-1 rounded-lg text-dark-400 hover:text-dark-100 hover:bg-dark-700 transition-colors"
@@ -275,7 +275,7 @@ const AppLayout = () => {
                     Channels
                   </h3>
                   <div className="space-y-1">
-                    {activeWorkspace.channels?.map((channel) => (
+                    {activeWorkspace?.channels?.map((channel) => (
                       <NavLink
                         key={channel._id || channel.id}
                         to={`/chat/${activeWorkspace._id || activeWorkspace.id}/${channel._id || channel.id}`}
@@ -311,14 +311,14 @@ const AppLayout = () => {
                     ))}
                   </div>
                 </div>
-              </aside>
+              </div>
               <style>{`
-                @keyframes slideInRight {
-                  from { transform: translateX(100%); }
-                  to { transform: translateX(0); }
+                @keyframes slideDown {
+                  from { transform: translateY(-100%); }
+                  to { transform: translateY(0); }
                 }
-                .animate-slideInRight {
-                  animation: slideInRight 0.2s ease-out;
+                .animate-slideDown {
+                  animation: slideDown 0.25s ease-out;
                 }
               `}</style>
             </div>
