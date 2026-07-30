@@ -1,29 +1,50 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT, 10) || 587,
-  secure: parseInt(process.env.SMTP_PORT, 10) === 465,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+let transporter = null;
+
+function getTransporter() {
+  if (transporter) return transporter;
+
+  if (process.env.SMTP_HOST) {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT, 10) || 587,
+      secure: parseInt(process.env.SMTP_PORT, 10) === 465,
+      requireTLS: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  } else {
+    transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  }
+
+  return transporter;
+}
 
 const FROM_ADDRESS = `"MindMeld" <${process.env.SMTP_USER}>`;
 
 async function sendEmail({ to, subject, text, html }) {
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from: FROM_ADDRESS,
       to,
       subject,
       text,
       html,
     });
+    console.log(`Email sent to ${to}: ${info.messageId}`);
     return info;
   } catch (error) {
-    console.error('sendEmail error:', error);
+    console.error('sendEmail error:', error.message);
+    console.error('Full error:', error);
     throw error;
   }
 }
