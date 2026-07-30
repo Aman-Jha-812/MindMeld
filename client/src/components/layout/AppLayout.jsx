@@ -248,7 +248,7 @@ const AppLayout = () => {
           {!location.pathname.startsWith('/chat') && (
             <button
               onClick={() => setMobileRightSidebar(true)}
-              className="fixed bottom-4 right-4 z-30 lg:hidden p-3 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-colors"
+              className="fixed top-4 right-4 z-30 lg:hidden p-2 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-colors"
             >
               <FiUsers size={20} />
             </button>
