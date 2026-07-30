@@ -12,10 +12,14 @@ export const getMessages = async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 50;
     const skip = (page - 1) * limit;
     const before = req.query.before;
+    const since = req.query.since;
 
     const filter = { channel: channelId };
     if (before) {
       filter.createdAt = { $lt: new Date(before) };
+    }
+    if (since) {
+      filter.createdAt = { $gt: new Date(since) };
     }
 
     const total = await Message.countDocuments(filter);

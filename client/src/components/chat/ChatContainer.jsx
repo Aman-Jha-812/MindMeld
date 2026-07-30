@@ -1,5 +1,6 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { FiX } from 'react-icons/fi';
+import * as chatService from '../../services/chatService';
 import { useChat } from '../../context/ChatContext';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
@@ -13,15 +14,54 @@ const ChatContainer = ({ workspaceId, channelId, workspaceName }) => {
     loadMessages,
     sendMessage,
     setTyping,
+    setMessages,
   } = useChat();
 
   const [error, setError] = useState(null);
+  const pollTimerRef = useRef(null);
 
   useEffect(() => {
     if (channelId && workspaceId) {
       loadMessages(workspaceId, channelId);
     }
   }, [channelId, workspaceId, loadMessages]);
+
+  useEffect(() => {
+    if (!channelId || !workspaceId) {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+      return;
+    }
+
+    pollTimerRef.current = setInterval(async () => {
+      try {
+        const latest = messages[messages.length - 1];
+        const since = latest?.createdAt;
+        if (!since) return;
+        const { data } = await chatService.getMessages(workspaceId, channelId, { since, limit: 10 });
+        const newMessages = data.data || [];
+        if (newMessages.length > 0) {
+          setMessages((prev) => {
+            const existing = new Set(prev.map((m) => m._id || m.id));
+            const toAdd = newMessages.filter((m) => !existing.has(m._id || m.id));
+            if (toAdd.length === 0) return prev;
+            return [...prev, ...toAdd];
+          });
+        }
+      } catch {
+        // polling fallback silently handles errors
+      }
+    }, 3000);
+
+    return () => {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+    };
+  }, [channelId, workspaceId, messages, setMessages]);
 
   const handleSend = useCallback(
     async ({ content, file }) => {
