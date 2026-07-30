@@ -11,6 +11,9 @@ function getTransporter() {
       port: parseInt(process.env.SMTP_PORT, 10) || 587,
       secure: parseInt(process.env.SMTP_PORT, 10) === 465,
       requireTLS: true,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -19,6 +22,9 @@ function getTransporter() {
   } else {
     transporter = nodemailer.createTransport({
       service: 'gmail',
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,

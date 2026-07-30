@@ -263,7 +263,6 @@ export const inviteMember = async (req, res) => {
 
     const user = await User.findOne({ email: email.toLowerCase() });
     const inviteLink = `${process.env.CLIENT_URL || 'http://localhost:3000'}/accept-invite?token=`;
-    let sendOk = true;
 
     if (user) {
       const existingMember = await WorkspaceMember.findOne({
@@ -297,12 +296,9 @@ export const inviteMember = async (req, res) => {
         data: { workspaceId, workspaceName: workspace.name },
       });
 
-      try {
-        await sendInviteEmail(user.email, workspace.name, `${inviteLink}none`);
-      } catch (err) {
-        console.error('Invite email failed:', err.message);
-        sendOk = false;
-      }
+      sendInviteEmail(user.email, workspace.name, `${inviteLink}none`).catch((err) =>
+        console.error('Invite email failed:', err)
+      );
     } else {
       const invitation = await Invitation.create({
         email,
@@ -310,17 +306,14 @@ export const inviteMember = async (req, res) => {
         invitedBy: req.user._id,
       });
 
-      try {
-        await sendInviteEmail(email, workspace.name, `${inviteLink}${invitation.token}`);
-      } catch (err) {
-        console.error('Invite email failed:', err.message);
-        sendOk = false;
-      }
+      sendInviteEmail(email, workspace.name, `${inviteLink}${invitation.token}`).catch((err) =>
+        console.error('Invite email failed:', err)
+      );
     }
 
     res.status(200).json({
       success: true,
-      message: sendOk ? 'Invitation sent successfully' : 'Invitation created but email failed to send',
+      message: 'Invitation sent successfully',
       data: { emailSent: sendOk },
     });
   } catch (error) {
