@@ -16,7 +16,7 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (!token) return;
-    const socket = io({ auth: { token }, transports: ['websocket', 'polling'] });
+    const socket = io(import.meta.env.VITE_API_URL, { auth: { token }, transports: ['websocket', 'polling'] });
     socketRef.current = socket;
     socket.on('new_message', (message) => {
       setMessages((prev) => [...prev, message]);

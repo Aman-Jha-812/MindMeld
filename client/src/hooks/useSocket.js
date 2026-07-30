@@ -9,7 +9,7 @@ const useSocket = () => {
     const token = localStorage.getItem('accessToken');
     if (!token) return;
 
-    const socket = io({
+    const socket = io(import.meta.env.VITE_API_URL, {
       auth: { token },
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
