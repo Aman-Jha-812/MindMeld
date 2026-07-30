@@ -6,7 +6,7 @@ const invitationSchema = new mongoose.Schema(
     email: { type: String, required: true, lowercase: true },
     workspace: { type: mongoose.Schema.Types.ObjectId, ref: 'Workspace', required: true },
     invitedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    token: { type: String, required: true, unique: true },
+    token: { type: String, unique: true },
     status: { type: String, enum: ['pending', 'accepted', 'declined', 'expired'], default: 'pending' },
     acceptedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   },
