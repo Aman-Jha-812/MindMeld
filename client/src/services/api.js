@@ -58,7 +58,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.post('/api/auth/refresh-token', {}, { withCredentials: true });
+        const { data } = await axios.post(`${baseURL}/auth/refresh-token`, {}, { withCredentials: true });
         const newToken = data.accessToken;
         localStorage.setItem('accessToken', newToken);
         api.defaults.headers.common.Authorization = `Bearer ${newToken}`;

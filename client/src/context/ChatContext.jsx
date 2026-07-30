@@ -12,6 +12,7 @@ export const ChatProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [typingUsers, setTypingUsers] = useState({});
+  const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef(null);
   const [socketVersion, setSocketVersion] = useState(0);
   const { user } = useAuth();
@@ -19,10 +20,41 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (!token || !user) return;
-    const socket = io(import.meta.env.VITE_API_URL, { auth: { token }, transports: ['websocket', 'polling'] });
+    const socket = io(import.meta.env.VITE_API_URL, {
+      auth: { token },
+      transports: ['websocket', 'polling'],
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+      timeout: 10000,
+    });
     socketRef.current = socket;
+
+    setIsConnected(false);
+
+    socket.on('connect', () => {
+      console.log('Chat socket connected');
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('Chat socket disconnected:', reason);
+      setIsConnected(false);
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('Chat socket connection error:', err.message);
+      if (err.message === 'Invalid token') {
+        const newToken = localStorage.getItem('accessToken');
+        if (newToken) socket.auth.token = newToken;
+      }
+      setIsConnected(false);
+    });
+
     socket.on('new_message', (message) => {
-      setMessages((prev) => [...prev, message]);
+      setMessages((prev) => {
+        if (prev.some((m) => (m._id || m.id) === (message._id || message.id))) return prev;
+        return [...prev, message];
+      });
     });
     socket.on('message_edited', (message) => {
       if (!message || !message._id) return;
@@ -93,7 +125,10 @@ export const ChatProvider = ({ children }) => {
     }
     const { data } = await chatService.sendMessage(workspaceId, channelId, { content, file: fileData });
     const newMessage = data.data || data.message || data;
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => {
+      if (prev.some((m) => (m._id || m.id) === (newMessage._id || newMessage.id))) return prev;
+      return [...prev, newMessage];
+    });
     return newMessage;
   }, []);
 
@@ -135,6 +170,7 @@ export const ChatProvider = ({ children }) => {
     messages,
     loading,
     typingUsers,
+    isConnected,
     socketVersion,
     setActiveChannel,
     loadMessages,

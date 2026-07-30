@@ -47,6 +47,7 @@ const ChatPage = () => {
     loading: chatLoading,
     messages,
     typingUsers,
+    isConnected,
     setTyping,
     clearTyping,
     addMessage,
@@ -61,7 +62,7 @@ const ChatPage = () => {
   const [previewFile, setPreviewFile] = useState(null);
   const [localTyping, setLocalTyping] = useState({});
 
-  const { socket, isConnected } = useSocket();
+  const { socket } = useSocket();
 
   const hasRouteParams = !!workspaceId;
   const showChat = hasRouteParams && channels.length > 0;
