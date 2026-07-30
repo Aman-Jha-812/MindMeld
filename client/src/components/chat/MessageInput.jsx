@@ -71,7 +71,7 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
   const canSend = text.trim().length > 0 || !!file;
 
   return (
-    <div className="border-t border-gray-700 bg-gray-800 px-2 sm:px-4 py-2 sm:py-3">
+    <div className="border-t border-gray-700 bg-gray-800 px-2 sm:px-4 py-2 sm:py-3 pb-16 sm:pb-3">
       {file && (
         <div className="flex items-center gap-2 mb-2 px-3 py-1.5 bg-gray-700 rounded-lg text-sm">
           <FiPaperclip size={14} className="text-indigo-400 shrink-0" />
