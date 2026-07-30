@@ -11,7 +11,11 @@ function emitToWorkspace(workspaceId, event, data) {
 }
 
 function emitToChannel(channelId, event, data) {
-  if (!io) return;
+  if (!io) {
+    console.log(`emitToChannel SKIPPED (io is null): ${event} to channel:${channelId}`);
+    return;
+  }
+  console.log(`emitToChannel: ${event} to channel:${channelId}`);
   io.to(`channel:${channelId}`).emit(event, data);
 }
 

@@ -14,9 +14,7 @@ const useSocket = () => {
     const socket = io(import.meta.env.VITE_API_URL, {
       auth: { token },
       transports: ['websocket', 'polling'],
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000,
-      timeout: 10000,
+      timeout: 20000,
     });
 
     socket.on('connect', () => {

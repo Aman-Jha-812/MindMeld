@@ -23,9 +23,7 @@ export const ChatProvider = ({ children }) => {
     const socket = io(import.meta.env.VITE_API_URL, {
       auth: { token },
       transports: ['websocket', 'polling'],
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000,
-      timeout: 10000,
+      timeout: 20000,
     });
     socketRef.current = socket;
 
@@ -34,6 +32,7 @@ export const ChatProvider = ({ children }) => {
     socket.on('connect', () => {
       console.log('Chat socket connected');
       setIsConnected(true);
+      setSocketVersion((v) => v + 1);
     });
 
     socket.on('disconnect', (reason) => {
@@ -51,8 +50,12 @@ export const ChatProvider = ({ children }) => {
     });
 
     socket.on('new_message', (message) => {
+      console.log('Received new_message event:', message);
       setMessages((prev) => {
-        if (prev.some((m) => (m._id || m.id) === (message._id || message.id))) return prev;
+        if (prev.some((m) => (m._id || m.id) === (message._id || message.id))) {
+          console.log('Duplicate message ignored');
+          return prev;
+        }
         return [...prev, message];
       });
     });
@@ -65,7 +68,6 @@ export const ChatProvider = ({ children }) => {
     socket.on('message_deleted', ({ messageId }) => {
       setMessages((prev) => prev.filter((msg) => msg._id !== messageId && msg.id !== messageId));
     });
-    setSocketVersion((v) => v + 1);
     return () => {
       socket.disconnect();
       socketRef.current = null;
@@ -73,10 +75,12 @@ export const ChatProvider = ({ children }) => {
   }, [user]);
 
   const joinChannel = useCallback((channelId) => {
+    console.log('Joining channel:', channelId, 'socket:', !!socketRef.current);
     socketRef.current?.emit('join_channel', { channelId });
   }, []);
 
   const leaveChannel = useCallback((channelId) => {
+    console.log('Leaving channel:', channelId);
     socketRef.current?.emit('leave_channel', { channelId });
   }, []);
 

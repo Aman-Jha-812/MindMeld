@@ -66,11 +66,13 @@ const setupSocket = (httpServer) => {
 
     socket.on('join_channel', ({ channelId }) => {
       if (!channelId) return;
+      console.log(`Socket ${socket.id} joining channel:${channelId}`);
       socket.join(`channel:${channelId}`);
     });
 
     socket.on('leave_channel', ({ channelId }) => {
       if (!channelId) return;
+      console.log(`Socket ${socket.id} leaving channel:${channelId}`);
       socket.leave(`channel:${channelId}`);
     });
 
