@@ -5,6 +5,7 @@ import Notification from '../models/Notification.js';
 import Task from '../models/Task.js';
 import Message from '../models/Message.js';
 import User from '../models/User.js';
+import Invitation from '../models/Invitation.js';
 import { sendInviteEmail } from '../services/emailService.js';
 
 const DEFAULT_CHANNELS = [
@@ -252,57 +253,67 @@ export const inviteMember = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
-
-    if (!user) {
+    const workspace = await Workspace.findById(workspaceId);
+    if (!workspace) {
       return res.status(404).json({
         success: false,
-        message: 'No user found with that email',
+        message: 'Workspace not found',
       });
     }
 
-    const existingMember = await WorkspaceMember.findOne({
-      workspace: workspaceId,
-      user: user._id,
-    });
+    const user = await User.findOne({ email: email.toLowerCase() });
+    const inviteLink = `${process.env.CLIENT_URL || 'http://localhost:3000'}/accept-invite?token=`;
 
-    if (existingMember) {
-      return res.status(400).json({
-        success: false,
-        message: 'User is already a member of this workspace',
+    if (user) {
+      const existingMember = await WorkspaceMember.findOne({
+        workspace: workspaceId,
+        user: user._id,
       });
+
+      if (existingMember) {
+        return res.status(400).json({
+          success: false,
+          message: 'User is already a member of this workspace',
+        });
+      }
+
+      await WorkspaceMember.create({
+        workspace: workspaceId,
+        user: user._id,
+        role: 'member',
+      });
+
+      await Workspace.findByIdAndUpdate(workspaceId, {
+        $addToSet: { members: user._id },
+      });
+
+      await Notification.create({
+        recipient: user._id,
+        workspace: workspaceId,
+        type: 'invitation',
+        title: `Invited to ${workspace.name}`,
+        message: `You have been invited to join ${workspace.name}`,
+        data: { workspaceId, workspaceName: workspace.name },
+      });
+
+      sendInviteEmail(user.email, workspace.name, `${inviteLink}none`).catch((err) =>
+        console.error('Invite email failed:', err.message)
+      );
+    } else {
+      const invitation = await Invitation.create({
+        email,
+        workspace: workspaceId,
+        invitedBy: req.user._id,
+      });
+
+      sendInviteEmail(email, workspace.name, `${inviteLink}${invitation.token}`).catch((err) =>
+        console.error('Invite email failed:', err.message)
+      );
     }
-
-    await WorkspaceMember.create({
-      workspace: workspaceId,
-      user: user._id,
-      role: 'member',
-    });
-
-    await Workspace.findByIdAndUpdate(workspaceId, {
-      $addToSet: { members: user._id },
-    });
-
-    const workspace = await Workspace.findById(workspaceId).populate('channels');
-
-    await Notification.create({
-      recipient: user._id,
-      workspace: workspaceId,
-      type: 'invitation',
-      title: `Invited to ${workspace.name}`,
-      message: `You have been invited to join ${workspace.name}`,
-      data: { workspaceId, workspaceName: workspace.name },
-    });
-
-    const inviteLink = `${process.env.CLIENT_URL || 'http://localhost:3000'}/workspace/${workspaceId}/join`;
-
-    sendInviteEmail(user.email, workspace.name, inviteLink).catch((err) =>
-      console.error('Invite email failed:', err.message)
-    );
 
     res.status(200).json({
       success: true,
-      message: 'Member invited successfully',
+      message: 'Invitation sent successfully',
     });
   } catch (error) {
     console.error('InviteMember error:', error);

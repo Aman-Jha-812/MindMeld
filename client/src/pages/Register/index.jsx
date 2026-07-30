@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
@@ -8,6 +8,8 @@ import { FiCpu, FiUser, FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 const Register = () => {
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const inviteToken = searchParams.get('inviteToken');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -26,8 +28,8 @@ const Register = () => {
   const onSubmit = async (data) => {
     setSubmitting(true);
     try {
-      await registerUser(data.name, data.email, data.password);
-      navigate('/dashboard', { replace: true });
+      await registerUser(data.name, data.email, data.password, inviteToken || undefined);
+      navigate(inviteToken ? `/accept-invite?token=${inviteToken}` : '/dashboard', { replace: true });
     } catch (err) {
       const message =
         err.response?.data?.message || 'Registration failed. Please try again.';

@@ -1,12 +1,15 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Invitation from '../models/Invitation.js';
+import Workspace from '../models/Workspace.js';
+import WorkspaceMember from '../models/WorkspaceMember.js';
 import { generateTokenPair, sendTokenResponse } from '../utils/generateToken.js';
 import { sendWelcomeEmail, sendPasswordResetEmail } from '../services/emailService.js';
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, inviteToken } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -24,6 +27,23 @@ export const register = async (req, res) => {
     }
 
     const user = await User.create({ name, email, password });
+
+    if (inviteToken) {
+      const invitation = await Invitation.findOne({ token: inviteToken, status: 'pending' });
+      if (invitation && invitation.email === email.toLowerCase()) {
+        await WorkspaceMember.create({
+          workspace: invitation.workspace,
+          user: user._id,
+          role: 'member',
+        });
+        await Workspace.findByIdAndUpdate(invitation.workspace, {
+          $addToSet: { members: user._id },
+        });
+        invitation.status = 'accepted';
+        invitation.acceptedBy = user._id;
+        await invitation.save();
+      }
+    }
 
     sendWelcomeEmail(user.email, user.name).catch((err) =>
       console.error('Welcome email failed:', err.message)
