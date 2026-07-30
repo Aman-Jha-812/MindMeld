@@ -201,11 +201,11 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex h-[calc(100vh-3rem)] -m-6 relative">
+    <div className="flex fixed inset-0 top-16 lg:static lg:h-[calc(100vh-3rem)] lg:-m-6">
       {/* Mobile sidebar toggle */}
       <button
         onClick={() => setShowSidebar(true)}
-        className="fixed top-4 left-4 z-30 lg:hidden p-2 rounded-lg bg-gray-900 border border-gray-700 text-gray-300 hover:text-gray-100 shadow-lg"
+        className="fixed top-4 left-4 z-30 lg:hidden p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-gray-300 hover:text-gray-100 shadow-lg"
       >
         <FiMenu size={20} />
       </button>

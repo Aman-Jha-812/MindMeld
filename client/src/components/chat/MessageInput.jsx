@@ -71,21 +71,21 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
   const canSend = text.trim().length > 0 || !!file;
 
   return (
-    <div className="border-t border-gray-700 bg-gray-800 px-4 py-3">
+    <div className="border-t border-gray-700 bg-gray-800 px-2 sm:px-4 py-2 sm:py-3">
       {file && (
         <div className="flex items-center gap-2 mb-2 px-3 py-1.5 bg-gray-700 rounded-lg text-sm">
-          <FiPaperclip size={14} className="text-indigo-400" />
-          <span className="text-gray-200 truncate flex-1">{file.name}</span>
+          <FiPaperclip size={14} className="text-indigo-400 shrink-0" />
+          <span className="text-gray-200 truncate flex-1 min-w-0">{file.name}</span>
           <button
             onClick={removeFile}
-            className="text-gray-400 hover:text-gray-200 transition-colors"
+            className="text-gray-400 hover:text-gray-200 transition-colors shrink-0"
           >
             <FiX size={16} />
           </button>
         </div>
       )}
-      <div className="flex items-end gap-2">
-        <div className="flex-1 relative">
+      <div className="flex items-end gap-1.5 sm:gap-2">
+        <div className="flex-1 min-w-0">
           <textarea
             ref={textareaRef}
             value={text}
@@ -94,40 +94,40 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
             disabled={disabled}
             rows={1}
             placeholder="Type a message..."
-            className="w-full resize-none bg-gray-700 text-gray-100 placeholder-gray-500 rounded-lg px-3 py-2 pr-20 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full resize-none bg-gray-700 text-gray-100 placeholder-gray-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
           />
-          <div className="absolute right-1 bottom-1 flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => {}}
-              disabled={disabled}
-              className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors disabled:opacity-50"
-              title="Emoji picker"
-            >
-              <FiSmile size={16} />
-            </button>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={disabled}
-              className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors disabled:opacity-50"
-              title="Attach file"
-            >
-              <FiPaperclip size={16} />
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*,.pdf,.docx,.zip"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-          </div>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            onClick={() => {}}
+            disabled={disabled}
+            className="hidden sm:flex p-1.5 text-gray-400 hover:text-gray-200 transition-colors disabled:opacity-50"
+            title="Emoji picker"
+          >
+            <FiSmile size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={disabled}
+            className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors disabled:opacity-50"
+            title="Attach file"
+          >
+            <FiPaperclip size={16} />
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,.pdf,.docx,.zip"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
         </div>
         <button
           onClick={handleSend}
           disabled={!canSend || disabled}
-          className="flex items-center justify-center w-9 h-9 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
         >
           <FiSend size={16} />
         </button>

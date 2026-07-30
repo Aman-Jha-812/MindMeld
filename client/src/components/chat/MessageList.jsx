@@ -25,19 +25,19 @@ const FilePreview = ({ fileUrl, fileName, fileSize, mimeType }) => (
     href={fileHref(fileUrl, fileName, mimeType)}
     target="_blank"
     rel="noopener noreferrer"
-    className="block mt-1 max-w-xs"
+    className="block mt-1 max-w-[200px] sm:max-w-xs"
   >
-    <div className="flex items-center gap-2 p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer">
+    <div className="flex items-center gap-2 p-1.5 sm:p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer">
       {fileUrl && isImageMime(mimeType) ? (
-        <img src={fileUrl} alt={fileName} className="w-10 h-10 object-cover rounded" />
+        <img src={fileUrl} alt={fileName} className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded" />
       ) : (
-        <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded">
-          <FiFile className="text-gray-400" size={18} />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-700 rounded">
+          <FiFile className="text-gray-400" size={14} />
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-sm text-gray-200 truncate">{fileName}</p>
-        {fileSize && <p className="text-xs text-gray-500">{fileSize}</p>}
+        <p className="text-xs sm:text-sm text-gray-200 truncate">{fileName}</p>
+        {fileSize && <p className="text-[10px] sm:text-xs text-gray-500">{fileSize}</p>}
       </div>
     </div>
   </a>
@@ -46,54 +46,54 @@ const FilePreview = ({ fileUrl, fileName, fileSize, mimeType }) => (
 const MessageBubble = ({ message, onDelete }) => {
   const isImageMsg = message.messageType === 'image' || (message.file?.url && isImageMime(message.file.mimeType));
   return (
-  <div className={`group flex gap-3 ${message.messageType === 'system' ? 'justify-center' : ''}`}>
-    {message.messageType === 'system' ? (
-      <div className="text-gray-500 text-xs italic text-center py-1 px-3 bg-gray-800/50 rounded-full">
-        {message.content}
-      </div>
-    ) : (
-      <>
-        <div className="flex-shrink-0">
-          {message.sender?.avatar ? (
-            <img src={typeof message.sender.avatar === 'string' ? message.sender.avatar : message.sender.avatar?.url} alt="" className="w-8 h-8 rounded-full object-cover" />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-medium text-white">
-              {message.sender?.name?.charAt(0)?.toUpperCase() || '?'}
-            </div>
-          )}
+    <div className={`group flex gap-2 sm:gap-3 ${message.messageType === 'system' ? 'justify-center' : ''}`}>
+      {message.messageType === 'system' ? (
+        <div className="text-gray-500 text-xs italic text-center py-1 px-3 bg-gray-800/50 rounded-full">
+          {message.content}
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm font-semibold text-gray-100">
-              {message.sender?.name || 'Unknown'}
-            </span>
-            <span className="text-xs text-gray-500">{formatRelativeTime(message.createdAt)}</span>
-            <button
-              onClick={() => onDelete?.(message._id || message.id)}
-              className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-500 hover:text-red-400"
-              title="Delete message"
-            >
-              <FiTrash2 size={14} />
-            </button>
+      ) : (
+        <>
+          <div className="flex-shrink-0">
+            {message.sender?.avatar ? (
+              <img src={typeof message.sender.avatar === 'string' ? message.sender.avatar : message.sender.avatar?.url} alt="" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover mt-0.5" />
+            ) : (
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] sm:text-xs font-medium text-white mt-0.5">
+                {message.sender?.name?.charAt(0)?.toUpperCase() || '?'}
+              </div>
+            )}
           </div>
-          {isImageMsg && (
-            <a href={fileHref(message.file.url, message.file.name, message.file.mimeType)} target="_blank" rel="noopener noreferrer" className="block mt-1.5 max-w-sm">
-              <img src={message.file.url} alt={message.file.name || ''} className="rounded-lg cursor-pointer hover:opacity-90 transition-opacity" />
-            </a>
-          )}
-          {message.content && (
-            <p className="text-sm text-gray-300 mt-0.5 whitespace-pre-wrap break-words">
-              {message.content}
-              {message.isEdited && <span className="text-gray-500 text-xs ml-1 italic">(edited)</span>}
-            </p>
-          )}
-          {message.file?.url && !isImageMsg && (
-            <FilePreview fileUrl={message.file.url} fileName={message.file.name} fileSize={message.file.size} mimeType={message.file.mimeType} />
-          )}
-        </div>
-      </>
-    )}
-  </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
+              <span className="text-xs sm:text-sm font-semibold text-gray-100 truncate max-w-[100px] sm:max-w-[200px]">
+                {message.sender?.name || 'Unknown'}
+              </span>
+              <span className="text-[10px] sm:text-xs text-gray-500 shrink-0">{formatRelativeTime(message.createdAt)}</span>
+              <button
+                onClick={() => onDelete?.(message._id || message.id)}
+                className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-500 hover:text-red-400 shrink-0"
+                title="Delete message"
+              >
+                <FiTrash2 size={14} />
+              </button>
+            </div>
+            {isImageMsg && (
+              <a href={fileHref(message.file.url, message.file.name, message.file.mimeType)} target="_blank" rel="noopener noreferrer" className="block mt-1.5 max-w-[200px] sm:max-w-sm">
+                <img src={message.file.url} alt={message.file.name || ''} className="rounded-lg cursor-pointer hover:opacity-90 transition-opacity w-full" />
+              </a>
+            )}
+            {message.content && (
+              <p className="text-xs sm:text-sm text-gray-300 mt-0.5 whitespace-pre-wrap break-words">
+                {message.content}
+                {message.isEdited && <span className="text-gray-500 text-[10px] sm:text-xs ml-1 italic">(edited)</span>}
+              </p>
+            )}
+            {message.file?.url && !isImageMsg && (
+              <FilePreview fileUrl={message.file.url} fileName={message.file.name} fileSize={message.file.size} mimeType={message.file.mimeType} />
+            )}
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
@@ -156,7 +156,7 @@ const MessageList = ({ messages, loading, onLoadMore, hasMore }) => {
     <div
       ref={containerRef}
       onScroll={handleScroll}
-      className="flex flex-col h-full overflow-y-auto px-4 py-2 space-y-3"
+      className="flex flex-col h-full overflow-y-auto px-2 sm:px-4 py-2 space-y-2 sm:space-y-3"
     >
       {loading && (!messages || messages.length === 0) && <LoadingSpinner />}
       <div ref={sentinelRef} className="h-1" />
