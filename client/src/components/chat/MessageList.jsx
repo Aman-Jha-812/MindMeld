@@ -63,17 +63,17 @@ const MessageBubble = ({ message, onDelete }) => {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
-              <span className="text-xs sm:text-sm font-semibold text-gray-100 truncate max-w-[100px] sm:max-w-[200px]">
+            <div className="flex items-baseline gap-1 sm:gap-2 flex-wrap">
+              <span className="text-xs sm:text-sm font-semibold text-gray-100 truncate max-w-[120px] sm:max-w-[200px]">
                 {message.sender?.name || 'Unknown'}
               </span>
-              <span className="text-[10px] sm:text-xs text-gray-500 shrink-0">{formatRelativeTime(message.createdAt)}</span>
+              <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">{formatRelativeTime(message.createdAt)}</span>
               <button
                 onClick={() => onDelete?.(message._id || message.id)}
                 className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-500 hover:text-red-400 shrink-0"
                 title="Delete message"
               >
-                <FiTrash2 size={14} />
+                <FiTrash2 size={12} />
               </button>
             </div>
             {isImageMsg && (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { FiHome, FiMessageSquare, FiGrid, FiLogOut, FiMenu, FiX, FiHash, FiUsers, FiBell, FiUser } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useWorkspace } from '../../context/WorkspaceContext';
@@ -31,13 +31,15 @@ const AppLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-dark-950">
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setMobileSidebar(true)}
-        className="fixed top-4 left-4 z-30 lg:hidden p-2 rounded-lg bg-dark-900 border border-dark-700 text-dark-300 hover:text-dark-100"
-      >
-        <FiMenu size={20} />
-      </button>
+      {/* Mobile Menu Button — hidden on chat page (ChatPage has its own) */}
+      {!location.pathname.startsWith('/chat') && (
+        <button
+          onClick={() => setMobileSidebar(true)}
+          className="fixed top-4 left-4 z-30 lg:hidden p-2 rounded-lg bg-dark-900 border border-dark-700 text-dark-300 hover:text-dark-100"
+        >
+          <FiMenu size={20} />
+        </button>
+      )}
 
       {/* Left Sidebar */}
       <aside className="hidden lg:flex flex-col h-screen w-64 fixed left-0 top-0 bg-dark-900 border-r border-dark-700 overflow-y-auto z-20">

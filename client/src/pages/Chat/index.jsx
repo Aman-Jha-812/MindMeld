@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { useChat } from '../../context/ChatContext';
 import useSocket from '../../hooks/useSocket';
@@ -201,11 +201,11 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex fixed inset-0 top-16 lg:static lg:h-[calc(100vh-3rem)] lg:-m-6">
-      {/* Mobile sidebar toggle — shifted right to avoid overlapping AppLayout's hamburger */}
+    <div className="flex h-[calc(100dvh-64px)] lg:h-[calc(100vh-3rem)] -m-6">
+      {/* Mobile sidebar toggle */}
       <button
         onClick={() => setShowSidebar(true)}
-        className="fixed top-4 left-14 z-30 lg:hidden p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-gray-300 hover:text-gray-100 shadow-lg"
+        className="fixed top-4 left-4 z-30 lg:hidden p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-gray-300 hover:text-gray-100 shadow-lg"
       >
         <FiMenu size={20} />
       </button>
@@ -220,7 +220,9 @@ const ChatPage = () => {
       {/* Channel sidebar */}
       <div className={`lg:flex flex-col w-72 bg-gray-900 border-r border-gray-800 flex-shrink-0 ${showSidebar ? 'fixed inset-y-0 left-0 z-50 shadow-2xl animate-slideIn' : 'hidden'}`}>
         <div className="flex lg:hidden items-center justify-between px-4 pt-3 pb-1">
-          <span className="text-sm font-semibold text-gray-100">Channels</span>
+          <Link to="/dashboard" className="text-sm text-indigo-400 hover:text-indigo-300 font-medium" onClick={() => setShowSidebar(false)}>
+            ← Dashboard
+          </Link>
           <button onClick={() => setShowSidebar(false)} className="p-1 text-gray-400 hover:text-gray-200">
             <FiX size={18} />
           </button>
@@ -325,7 +327,7 @@ const ChatPage = () => {
       </div>
 
       {/* Main chat area */}
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 pl-14 lg:pl-0 ${aiPanelOpen ? 'lg:mr-96' : ''}`}>
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 pl-12 lg:pl-0 ${aiPanelOpen ? 'lg:mr-96' : ''}`}>
         {!showChat ? (
           <div className="flex-1 flex items-center justify-center bg-gray-900">
             <EmptyState
