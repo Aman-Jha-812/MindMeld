@@ -49,6 +49,9 @@ export const ChatProvider = ({ children }) => {
   }, []);
 
   const loadChannels = useCallback(async (workspaceId) => {
+    setChannels([]);
+    setActiveChannelState(null);
+    setMessages([]);
     setLoading(true);
     try {
       const { data } = await chatService.getChannels(workspaceId);
@@ -62,6 +65,7 @@ export const ChatProvider = ({ children }) => {
   }, []);
 
   const loadMessages = useCallback(async (workspaceId, channelId, params) => {
+    setMessages([]);
     setLoading(true);
     try {
       const { data } = await chatService.getMessages(workspaceId, channelId, params);

@@ -23,6 +23,8 @@ export const WorkspaceProvider = ({ children }) => {
   }, []);
 
   const loadWorkspaceById = useCallback(async (id) => {
+    setActiveWorkspace(null);
+    setMembers([]);
     setLoading(true);
     try {
       const { data } = await workspaceService.getWorkspaceById(id);
@@ -111,6 +113,7 @@ export const WorkspaceProvider = ({ children }) => {
   }, [activeWorkspace]);
 
   const loadMembers = useCallback(async (workspaceId) => {
+    setMembers([]);
     try {
       const { data } = await workspaceService.getMembers(workspaceId);
       setMembers(data.data || []);
