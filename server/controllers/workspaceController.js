@@ -314,7 +314,6 @@ export const inviteMember = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Invitation sent successfully',
-      data: { emailSent: sendOk },
     });
   } catch (error) {
     console.error('InviteMember error:', error);
