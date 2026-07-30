@@ -242,10 +242,10 @@ const AppLayout = () => {
             </div>
           </aside>
 
-          {/* Mobile Right Sidebar Trigger */}
+          {/* Mobile Right Sidebar Trigger — hidden on chat page (channel sidebar has members) */}
           <button
             onClick={() => setMobileRightSidebar(true)}
-            className="fixed bottom-4 right-4 z-30 lg:hidden p-3 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-colors"
+            className={`fixed bottom-4 right-4 z-30 lg:hidden p-3 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-colors ${location.pathname.startsWith('/chat') ? 'hidden' : ''}`}
           >
             <FiUsers size={20} />
           </button>

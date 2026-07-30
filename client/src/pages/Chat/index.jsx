@@ -202,10 +202,10 @@ const ChatPage = () => {
 
   return (
     <div className="flex fixed inset-0 top-16 lg:static lg:h-[calc(100vh-3rem)] lg:-m-6">
-      {/* Mobile sidebar toggle */}
+      {/* Mobile sidebar toggle — shifted right to avoid overlapping AppLayout's hamburger */}
       <button
         onClick={() => setShowSidebar(true)}
-        className="fixed top-4 left-4 z-30 lg:hidden p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-gray-300 hover:text-gray-100 shadow-lg"
+        className="fixed top-4 left-14 z-30 lg:hidden p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-gray-300 hover:text-gray-100 shadow-lg"
       >
         <FiMenu size={20} />
       </button>
@@ -325,7 +325,7 @@ const ChatPage = () => {
       </div>
 
       {/* Main chat area */}
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${aiPanelOpen ? 'lg:mr-96' : ''}`}>
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 pl-14 lg:pl-0 ${aiPanelOpen ? 'lg:mr-96' : ''}`}>
         {!showChat ? (
           <div className="flex-1 flex items-center justify-center bg-gray-900">
             <EmptyState
