@@ -25,7 +25,7 @@ const FilePreview = ({ fileUrl, fileName, fileSize, mimeType }) => (
     href={fileHref(fileUrl, fileName, mimeType)}
     target="_blank"
     rel="noopener noreferrer"
-    className="block mt-1 max-w-[200px] sm:max-w-xs"
+    className="block mt-1 max-w-full sm:max-w-xs"
   >
     <div className="flex items-center gap-2 p-1.5 sm:p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer">
       {fileUrl && isImageMime(mimeType) ? (
@@ -77,8 +77,8 @@ const MessageBubble = ({ message, onDelete }) => {
               </button>
             </div>
             {isImageMsg && (
-              <a href={fileHref(message.file.url, message.file.name, message.file.mimeType)} target="_blank" rel="noopener noreferrer" className="block mt-1.5 max-w-[200px] sm:max-w-sm">
-                <img src={message.file.url} alt={message.file.name || ''} className="rounded-lg cursor-pointer hover:opacity-90 transition-opacity w-full" />
+              <a href={fileHref(message.file.url, message.file.name, message.file.mimeType)} target="_blank" rel="noopener noreferrer" className="block mt-1.5">
+                <img src={message.file.url} alt={message.file.name || ''} className="rounded-lg cursor-pointer hover:opacity-90 transition-opacity w-full max-w-full" />
               </a>
             )}
             {message.content && (
@@ -156,7 +156,7 @@ const MessageList = ({ messages, loading, onLoadMore, hasMore }) => {
     <div
       ref={containerRef}
       onScroll={handleScroll}
-      className="flex flex-col h-full overflow-y-auto px-2 sm:px-4 py-2 space-y-2 sm:space-y-3"
+      className="flex flex-col w-full h-full overflow-y-auto px-2 sm:px-4 py-2 space-y-2 sm:space-y-3"
     >
       {loading && (!messages || messages.length === 0) && <LoadingSpinner />}
       <div ref={sentinelRef} className="h-1" />

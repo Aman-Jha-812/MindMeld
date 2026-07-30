@@ -201,7 +201,7 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-64px)] lg:h-[calc(100vh-3rem)] -m-6">
+    <div className="flex w-full h-[calc(100vh-64px)] lg:h-[calc(100vh-3rem)] -m-6">
       {/* Mobile sidebar toggle */}
       <button
         onClick={() => setShowSidebar(true)}
@@ -327,7 +327,7 @@ const ChatPage = () => {
       </div>
 
       {/* Main chat area */}
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 pl-12 lg:pl-0 ${aiPanelOpen ? 'lg:mr-96' : ''}`}>
+      <div className={`flex-1 flex flex-col min-w-0 w-full transition-all duration-300 pl-10 lg:pl-0 ${aiPanelOpen ? 'lg:mr-96' : ''}`}>
         {!showChat ? (
           <div className="flex-1 flex items-center justify-center bg-gray-900">
             <EmptyState

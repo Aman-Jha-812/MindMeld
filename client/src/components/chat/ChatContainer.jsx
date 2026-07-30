@@ -47,7 +47,7 @@ const ChatContainer = ({ workspaceId, channelId, workspaceName }) => {
   );
 
   return (
-    <div className="flex flex-col h-full bg-gray-900">
+    <div className="flex flex-col w-full h-full bg-gray-900">
       <ChatHeader
         channel={activeChannel}
         workspaceName={workspaceName}
@@ -61,7 +61,7 @@ const ChatContainer = ({ workspaceId, channelId, workspaceName }) => {
           </button>
         </div>
       )}
-      <div className="flex-1 overflow-hidden relative">
+      <div className="flex-1 w-full overflow-hidden relative">
         <MessageList
           messages={messages}
           loading={loading}
