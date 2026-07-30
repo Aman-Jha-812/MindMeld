@@ -13,6 +13,7 @@ export const ChatProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [typingUsers, setTypingUsers] = useState({});
   const socketRef = useRef(null);
+  const [socketVersion, setSocketVersion] = useState(0);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export const ChatProvider = ({ children }) => {
     socket.on('message_deleted', ({ messageId }) => {
       setMessages((prev) => prev.filter((msg) => msg._id !== messageId && msg.id !== messageId));
     });
+    setSocketVersion((v) => v + 1);
     return () => {
       socket.disconnect();
       socketRef.current = null;
@@ -129,6 +131,7 @@ export const ChatProvider = ({ children }) => {
     messages,
     loading,
     typingUsers,
+    socketVersion,
     setActiveChannel,
     loadMessages,
     sendMessage,

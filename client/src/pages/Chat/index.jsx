@@ -52,6 +52,7 @@ const ChatPage = () => {
     addMessage,
     joinChannel,
     leaveChannel,
+    socketVersion,
   } = useChat();
 
   const [showSidebar, setShowSidebar] = useState(false);
@@ -102,7 +103,7 @@ const ChatPage = () => {
     if (!channelId) return;
     joinChannel(channelId);
     return () => leaveChannel(channelId);
-  }, [channelId, joinChannel, leaveChannel]);
+  }, [channelId, joinChannel, leaveChannel, socketVersion]);
 
   useEffect(() => {
     if (!socket) return;
