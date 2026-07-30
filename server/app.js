@@ -59,12 +59,13 @@ app.use(mongoSanitize());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later.' },
 });
 
-app.use(limiter);
+app.use('/api/', limiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
