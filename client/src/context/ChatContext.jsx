@@ -14,6 +14,7 @@ export const ChatProvider = ({ children }) => {
   const [typingUsers, setTypingUsers] = useState({});
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef(null);
+  const pendingChannelRef = useRef(null);
   const [socketVersion, setSocketVersion] = useState(0);
   const { user } = useAuth();
 
@@ -32,6 +33,10 @@ export const ChatProvider = ({ children }) => {
     socket.on('connect', () => {
       console.log('Chat socket connected');
       setIsConnected(true);
+      if (pendingChannelRef.current) {
+        console.log('Re-joining pending channel on connect:', pendingChannelRef.current);
+        socket.emit('join_channel', { channelId: pendingChannelRef.current });
+      }
       setSocketVersion((v) => v + 1);
     });
 
@@ -50,10 +55,9 @@ export const ChatProvider = ({ children }) => {
     });
 
     socket.on('new_message', (message) => {
-      console.log('Received new_message event:', message);
+      console.log('Received new_message event:', message._id);
       setMessages((prev) => {
         if (prev.some((m) => (m._id || m.id) === (message._id || message.id))) {
-          console.log('Duplicate message ignored');
           return prev;
         }
         return [...prev, message];
@@ -68,6 +72,7 @@ export const ChatProvider = ({ children }) => {
     socket.on('message_deleted', ({ messageId }) => {
       setMessages((prev) => prev.filter((msg) => msg._id !== messageId && msg.id !== messageId));
     });
+    setSocketVersion((v) => v + 1);
     return () => {
       socket.disconnect();
       socketRef.current = null;
@@ -75,11 +80,13 @@ export const ChatProvider = ({ children }) => {
   }, [user]);
 
   const joinChannel = useCallback((channelId) => {
+    pendingChannelRef.current = channelId;
     console.log('Joining channel:', channelId, 'socket:', !!socketRef.current);
     socketRef.current?.emit('join_channel', { channelId });
   }, []);
 
   const leaveChannel = useCallback((channelId) => {
+    if (pendingChannelRef.current === channelId) pendingChannelRef.current = null;
     console.log('Leaving channel:', channelId);
     socketRef.current?.emit('leave_channel', { channelId });
   }, []);
