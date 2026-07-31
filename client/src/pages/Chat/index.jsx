@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { useChat } from '../../context/ChatContext';
 import useSocket from '../../hooks/useSocket';
-import api from '../../services/api';
 import AIAssistantPanel from '../../components/ai/AIAssistantPanel';
 import ChatContainer from '../../components/chat/ChatContainer';
 import ChannelList from '../../components/chat/ChannelList';
@@ -55,7 +54,6 @@ const ChatPage = () => {
     joinChannel,
     leaveChannel,
     socketVersion,
-    refreshUnreadCount,
   } = useChat();
 
   const [showSidebar, setShowSidebar] = useState(false);
@@ -105,11 +103,8 @@ const ChatPage = () => {
   useEffect(() => {
     if (!channelId) return;
     joinChannel(channelId);
-    api.put(`/notifications/read-channel/${channelId}`)
-      .then(() => refreshUnreadCount())
-      .catch(() => {});
     return () => leaveChannel(channelId);
-  }, [channelId, joinChannel, leaveChannel, socketVersion, refreshUnreadCount]);
+  }, [channelId, joinChannel, leaveChannel, socketVersion]);
 
   useEffect(() => {
     if (!socket) return;

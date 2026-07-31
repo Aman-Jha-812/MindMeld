@@ -45,8 +45,13 @@ export const ChatProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const socketRef = useRef(null);
   const pendingChannelRef = useRef(null);
+  const activeChannelRef = useRef(null);
   const [socketVersion, setSocketVersion] = useState(0);
   const { user } = useAuth();
+
+  useEffect(() => {
+    activeChannelRef.current = activeChannel;
+  }, [activeChannel]);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -104,6 +109,12 @@ export const ChatProvider = ({ children }) => {
     });
     socket.on('notification', (notification) => {
       console.log('Received notification event:', notification?._id);
+      const notifChannelId = notification?.data?.channelId;
+      const currentChannelId = activeChannelRef.current?._id || activeChannelRef.current?.id;
+      if (notifChannelId && notifChannelId === currentChannelId) {
+        api.put(`/notifications/read-channel/${notifChannelId}`).catch(() => {});
+        return;
+      }
       setUnreadCount((prev) => prev + 1);
       playNotificationSound();
       if (notification?.title) {
@@ -225,6 +236,22 @@ export const ChatProvider = ({ children }) => {
     }
   }, []);
 
+  const markChannelRead = useCallback(async (channelId) => {
+    if (!channelId) return;
+    try {
+      await api.put(`/notifications/read-channel/${channelId}`);
+      refreshUnreadCount();
+    } catch (err) {
+      console.error('Failed to mark channel as read:', err);
+    }
+  }, [refreshUnreadCount]);
+
+  useEffect(() => {
+    if (activeChannel) {
+      markChannelRead(activeChannel._id || activeChannel.id);
+    }
+  }, [activeChannel, markChannelRead]);
+
   useEffect(() => {
     if (user) {
       refreshUnreadCount();
@@ -241,6 +268,7 @@ export const ChatProvider = ({ children }) => {
     socketVersion,
     unreadCount,
     refreshUnreadCount,
+    markChannelRead,
     setActiveChannel,
     loadMessages,
     sendMessage,
