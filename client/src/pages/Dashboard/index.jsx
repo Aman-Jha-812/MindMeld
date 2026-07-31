@@ -19,21 +19,7 @@ import WorkspaceCard from '../../components/dashboard/WorkspaceCard';
 import ActivityFeed from '../../components/dashboard/ActivityFeed';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
-
-const PLACEHOLDER_TASKS = [
-  { id: '1', title: 'Review Q3 roadmap', priority: 'high', status: 'in_progress', dueDate: new Date(Date.now() + 86400000 * 2).toISOString(), assignee: null },
-  { id: '2', title: 'Update API documentation', priority: 'medium', status: 'todo', dueDate: new Date(Date.now() + 86400000 * 5).toISOString(), assignee: null },
-  { id: '3', title: 'Fix login page layout bug', priority: 'urgent', status: 'todo', dueDate: new Date(Date.now() - 86400000).toISOString(), assignee: null },
-  { id: '4', title: 'Design system color tokens', priority: 'low', status: 'done', dueDate: new Date(Date.now() - 86400000 * 2).toISOString(), assignee: null },
-];
-
-const PLACEHOLDER_ACTIVITIES = [
-  { id: '1', type: 'task_created', user: { name: 'Alex Chen' }, target: 'Design system audit', createdAt: new Date(Date.now() - 60000 * 15).toISOString() },
-  { id: '2', type: 'message_sent', user: { name: 'Sarah Kim' }, target: 'general', createdAt: new Date(Date.now() - 60000 * 45).toISOString() },
-  { id: '3', type: 'member_joined', user: { name: 'Jordan Lee' }, target: 'Design Team', createdAt: new Date(Date.now() - 3600000 * 2).toISOString() },
-  { id: '4', type: 'task_completed', user: { name: 'You' }, target: 'Setup CI/CD pipeline', createdAt: new Date(Date.now() - 3600000 * 4).toISOString() },
-  { id: '5', type: 'file_uploaded', user: { name: 'Maya Patel' }, target: 'mockups-v2.fig', createdAt: new Date(Date.now() - 3600000 * 6).toISOString() },
-];
+import * as dashboardService from '../../services/dashboardService';
 
 const AI_SUGGESTIONS = [
   'Try using "/summarize" in chat to get AI-powered conversation summaries.',
@@ -47,13 +33,45 @@ const Dashboard = () => {
   const { workspaces, loading: workspacesLoading, loadWorkspaces } = useWorkspace();
   const navigate = useNavigate();
 
-  const [tasks] = useState(PLACEHOLDER_TASKS);
-  const [activities] = useState(PLACEHOLDER_ACTIVITIES);
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(true);
+  const [activities, setActivities] = useState([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [aiTipIndex, setAiTipIndex] = useState(0);
 
   useEffect(() => {
     loadWorkspaces();
   }, [loadWorkspaces]);
+
+  useEffect(() => {
+    dashboardService.getRecentActivity(10)
+      .then(({ data }) => setActivities(data.data || []))
+      .catch(() => setActivities([]))
+      .finally(() => setActivitiesLoading(false));
+  }, []);
+
+  useEffect(() => {
+    dashboardService.getUnreadCount()
+      .then(({ data }) => setUnreadCount(data.data?.unreadCount || 0))
+      .catch(() => setUnreadCount(0));
+  }, []);
+
+  useEffect(() => {
+    if (workspaces.length === 0) {
+      setTasks([]);
+      setTasksLoading(false);
+      return;
+    }
+    setTasksLoading(true);
+    Promise.all(workspaces.map((w) => dashboardService.getWorkspaceTasks(w._id || w.id)))
+      .then((results) => {
+        const all = results.flatMap((r) => r.data?.data || []);
+        setTasks(all);
+      })
+      .catch(() => setTasks([]))
+      .finally(() => setTasksLoading(false));
+  }, [workspaces]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -66,7 +84,7 @@ const Dashboard = () => {
     if (!t.dueDate) return true;
     const due = new Date(t.dueDate);
     const now = new Date();
-    return due.toDateString() === now.toDateString() || t.status !== 'done';
+    return due.toDateString() === now.toDateString() || t.status !== 'completed';
   });
 
   const onlineMembers = Math.min(workspaces.reduce((acc, w) => acc + (w.memberCount || w.members?.length || 0), 0), 12) || 3;
@@ -99,17 +117,17 @@ const Dashboard = () => {
         />
         <StatsCard
           title="Active Tasks"
-          value={todayTasks.filter((t) => t.status !== 'done').length}
+          value={tasksLoading ? '...' : todayTasks.filter((t) => t.status !== 'completed').length}
           icon={<FiCheckSquare size={20} />}
           color="orange"
-          change={`${todayTasks.filter((t) => t.status === 'done').length} completed`}
+          change={`${tasks.filter((t) => t.status === 'completed').length} completed`}
         />
         <StatsCard
           title="Notifications"
-          value="3"
+          value={unreadCount}
           icon={<FiBell size={20} />}
           color="purple"
-          change="+2 since yesterday"
+          change={unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
         />
         <StatsCard
           title="Online Members"
@@ -129,14 +147,18 @@ const Dashboard = () => {
                 Today&apos;s Tasks
               </h2>
               <span className="text-xs text-gray-500 bg-gray-700 px-2 py-1 rounded-full">
-                {todayTasks.filter((t) => t.status === 'done').length}/{todayTasks.length} done
+                {todayTasks.filter((t) => t.status === 'completed').length}/{todayTasks.length} done
               </span>
             </div>
-            {todayTasks.length > 0 ? (
+            {tasksLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <LoadingSpinner size="lg" />
+              </div>
+            ) : todayTasks.length > 0 ? (
               <div className="space-y-2">
                 {todayTasks.map((task) => (
                   <TaskCard
-                    key={task.id}
+                    key={task._id || task.id}
                     task={task}
                     onClick={() => {}}
                   />
@@ -226,7 +248,13 @@ const Dashboard = () => {
                 Recent Activity
               </h2>
             </div>
-            <ActivityFeed activities={activities} />
+            {activitiesLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <LoadingSpinner size="lg" />
+              </div>
+            ) : (
+              <ActivityFeed activities={activities} />
+            )}
           </div>
         </div>
       </div>

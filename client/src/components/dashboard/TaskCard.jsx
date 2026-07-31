@@ -10,23 +10,24 @@ const PRIORITY_STYLES = {
 const STATUS_ICONS = {
   todo: FiCircle,
   in_progress: FiAlertCircle,
+  completed: FiCheckCircle,
   done: FiCheckCircle,
 };
 
 const TaskCard = ({ task, onStatusChange, onClick }) => {
   const priority = task?.priority?.toLowerCase() || 'medium';
   const priorityStyle = PRIORITY_STYLES[priority] || PRIORITY_STYLES.medium;
+  const isDone = task?.status === 'completed' || task?.status === 'done';
   const StatusIcon = STATUS_ICONS[task?.status] || FiCircle;
 
   const dueDate = task?.dueDate ? new Date(task.dueDate) : null;
-  const isOverdue = dueDate && dueDate < new Date() && task?.status !== 'done';
+  const isOverdue = dueDate && dueDate < new Date() && !isDone;
   const dueDateStr = dueDate
     ? dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     : null;
 
   const nextStatus = task?.status === 'todo' ? 'in_progress'
-    : task?.status === 'in_progress' ? 'done'
-    : 'todo';
+    : (task?.status === 'in_progress' ? 'completed' : 'todo');
 
   return (
     <div
@@ -43,7 +44,7 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
           onStatusChange?.(task, nextStatus);
         }}
         className={`flex-shrink-0 transition-colors ${
-          task?.status === 'done'
+          isDone
             ? 'text-green-400'
             : 'text-gray-500 hover:text-gray-300'
         }`}
@@ -54,7 +55,7 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
 
       <div className="flex-1 min-w-0">
         <p className={`text-sm truncate ${
-          task?.status === 'done' ? 'text-gray-500 line-through' : 'text-gray-200'
+          isDone ? 'text-gray-500 line-through' : 'text-gray-200'
         }`}>
           {task?.title || 'Untitled task'}
         </p>
@@ -84,6 +85,22 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
           ) : (
             <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-medium text-white">
               {task.assignee.name?.charAt(0)?.toUpperCase() || '?'}
+            </div>
+          )}
+        </div>
+      )}
+
+      {!task?.assignee && task?.assignedTo && (
+        <div className="flex-shrink-0">
+          {task.assignedTo.avatar ? (
+            <img
+              src={task.assignedTo.avatar}
+              alt={task.assignedTo.name || ''}
+              className="w-6 h-6 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-medium text-white">
+              {task.assignedTo.name?.charAt(0)?.toUpperCase() || '?'}
             </div>
           )}
         </div>

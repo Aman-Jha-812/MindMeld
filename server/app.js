@@ -17,6 +17,7 @@ import taskRoutes from './routes/taskRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import fileRoutes from './routes/fileRoutes.js';
 import invitationRoutes from './routes/invitationRoutes.js';
+import activityRoutes from './routes/activityRoutes.js';
 import { notFound, errorHandler } from './middeware/errorMiddleware.js';
 
 dotenv.config();
@@ -77,6 +78,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/invitations', invitationRoutes);
+app.use('/api/activity', activityRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
