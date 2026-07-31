@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useWorkspace } from '../../context/WorkspaceContext';
@@ -32,7 +34,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
 import InviteModal from './components/InviteModal';
 import AIAssistantPanel from '../../components/ai/AIAssistantPanel';
-import TaskCard from '../../components/dashboard/TaskCard';
+import TaskCard from '../../components/dashboard/SortableTaskCard';
 import api from '../../services/api';
 
 const ROLE_BADGE_VARIANTS = {
@@ -78,6 +80,22 @@ const WorkspacePage = () => {
   const [tasks, setTasks] = useState([]);
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [taskForm, setTaskForm] = useState({ title: '', priority: 'medium', dueDate: '' });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  );
+
+  const handleDragEnd = async ({ active, over }) => {
+    if (!over || active.id === over.id) return;
+    const oldIndex = tasks.findIndex((t) => (t._id || t.id) === active.id);
+    const newIndex = tasks.findIndex((t) => (t._id || t.id) === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    const next = arrayMove(tasks, oldIndex, newIndex);
+    setTasks(next);
+    api.put('/tasks/reorder', {
+      tasks: next.map((t, i) => ({ id: t._id || t.id, order: i, status: t.status })),
+    }).catch(() => toast.error('Failed to save task order'));
+  };
 
   const handleCreateWorkspace = useCallback(async (e) => {
     e.preventDefault();
@@ -525,9 +543,15 @@ const WorkspacePage = () => {
             </div>
           </div>
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2">
-            {tasks.length > 0 ? tasks.map((task) => (
-              <TaskCard key={task._id || task.id} task={task} onStatusChange={handleTaskStatusChange} />
-            )) : (
+            {tasks.length > 0 ? (
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={tasks.map((t) => t._id || t.id)} strategy={verticalListSortingStrategy}>
+                  {tasks.map((task) => (
+                    <TaskCard key={task._id || task.id} task={task} onStatusChange={handleTaskStatusChange} />
+                  ))}
+                </SortableContext>
+              </DndContext>
+            ) : (
               <p className="text-xs text-gray-600 text-center py-4">No tasks yet</p>
             )}
           </div>
