@@ -77,7 +77,7 @@ const WorkspacePage = () => {
   const [showAI, setShowAI] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [showCreateTask, setShowCreateTask] = useState(false);
-  const [taskForm, setTaskForm] = useState({ title: '', priority: 'medium', dueDate: '' });
+  const [taskForm, setTaskForm] = useState({ title: '', priority: 'medium', dueDate: '', assignedTo: '' });
 
   const handleCreateWorkspace = useCallback(async (e) => {
     e.preventDefault();
@@ -171,11 +171,15 @@ const WorkspacePage = () => {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await api.post(`/tasks/workspaces/${workspaceId}/tasks`, taskForm);
+      const payload = {
+        ...taskForm,
+        assignedTo: taskForm.assignedTo || undefined,
+      };
+      const { data } = await api.post(`/tasks/workspaces/${workspaceId}/tasks`, payload);
       const newTask = data.data || data;
       setTasks(prev => [...prev, newTask]);
       setShowCreateTask(false);
-      setTaskForm({ title: '', priority: 'medium', dueDate: '' });
+      setTaskForm({ title: '', priority: 'medium', dueDate: '', assignedTo: '' });
       toast.success('Task created');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create task');
@@ -637,6 +641,23 @@ const WorkspacePage = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Due Date</label>
             <input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm(prev => ({...prev, dueDate: e.target.value}))} className="input-field" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">Assign To</label>
+            <select
+              value={taskForm.assignedTo}
+              onChange={(e) => setTaskForm(prev => ({...prev, assignedTo: e.target.value}))}
+              className="input-field"
+            >
+              <option value="">No one</option>
+              {members.map((member) => {
+                const memberId = member.user?._id || member._id || member.id;
+                const memberName = member.user?.name || member.name || 'Unknown';
+                return (
+                  <option key={memberId} value={memberId}>{memberName}</option>
+                );
+              })}
+            </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={() => setShowCreateTask(false)} className="btn-secondary">Cancel</button>

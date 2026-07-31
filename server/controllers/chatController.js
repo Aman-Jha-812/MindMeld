@@ -4,6 +4,7 @@ import Workspace from '../models/Workspace.js';
 import WorkspaceMember from '../models/WorkspaceMember.js';
 import Notification from '../models/Notification.js';
 import { emitToChannel, sendNotification } from '../services/socketService.js';
+import { onlineUsers } from '../config/socket.js';
 
 export const getMessages = async (req, res) => {
   try {
@@ -87,6 +88,33 @@ export const sendMessage = async (req, res) => {
       .populate('replyTo');
 
     emitToChannel(channelId, 'new_message', populatedMessage);
+
+    const senderId = req.user._id.toString();
+    const mentionIds = (mentions || []).map((m) => m.toString());
+
+    const memberships = await WorkspaceMember.find({ workspace: channel.workspace }).select('user');
+    const messageNotifications = memberships
+      .map((m) => m.user.toString())
+      .filter((memberId) =>
+        memberId !== senderId &&
+        !mentionIds.includes(memberId) &&
+        onlineUsers.has(memberId)
+      )
+      .map((memberId) =>
+        Notification.create({
+          recipient: memberId,
+          workspace: channel.workspace,
+          type: 'new_message',
+          title: `New message in #${channel.name}`,
+          message: content || (file ? 'Sent a file' : ''),
+          data: { channelId, workspaceId: channel.workspace, messageId: message._id },
+        })
+      );
+
+    const createdNotifications = await Promise.all(messageNotifications);
+    createdNotifications.forEach((notification) => {
+      sendNotification(notification.recipient.toString(), notification);
+    });
 
     if (mentions && mentions.length > 0) {
       const mentionNotifications = mentions.map((userId) =>
