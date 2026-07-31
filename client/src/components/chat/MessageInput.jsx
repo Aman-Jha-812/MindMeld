@@ -1,12 +1,53 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { FiSend, FiSmile, FiPaperclip, FiX } from 'react-icons/fi';
+import * as nsfwjs from 'nsfwjs';
 
 const MAX_ROWS = 4;
 const DEBOUNCE_MS = 500;
+const NSFW_THRESHOLD = 0.7;
+
+let nsfwModelPromise = null;
+const getNsfwModel = () => {
+  if (!nsfwModelPromise) {
+    nsfwModelPromise = nsfwjs.load();
+  }
+  return nsfwModelPromise;
+};
+
+const imageToBlobUrl = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+const createImage = (src) =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+
+const isNsfwImage = async (file) => {
+  try {
+    const model = await getNsfwModel();
+    const dataUrl = await imageToBlobUrl(file);
+    const img = await createImage(dataUrl);
+    const predictions = await model.classify(img);
+    const top = predictions[0];
+    return top && ['Porn', 'Hentai', 'Sexy'].includes(top.className) && top.probability >= NSFW_THRESHOLD;
+  } catch (err) {
+    console.error('NSFW check failed:', err);
+    return false;
+  }
+};
 
 const MessageInput = ({ onSend, onTyping, disabled }) => {
   const [text, setText] = useState('');
   const [file, setFile] = useState(null);
+  const [scanning, setScanning] = useState(false);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
   const debounceRef = useRef(null);
@@ -40,9 +81,19 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
     }
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!text.trim() && !file) return;
     if (disabled) return;
+    if (file && file.type?.startsWith('image/')) {
+      setScanning(true);
+      const nsfw = await isNsfwImage(file);
+      setScanning(false);
+      if (nsfw) {
+        setFile(null);
+        alert('This image was blocked because it may contain inappropriate content.');
+        return;
+      }
+    }
     if (onSend) {
       onSend({ content: text.trim(), file });
     }
@@ -68,7 +119,7 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
     }
   };
 
-  const canSend = text.trim().length > 0 || !!file;
+  const canSend = (text.trim().length > 0 || !!file) && !scanning;
 
   return (
     <div className="border-t border-gray-700 bg-gray-800 px-2 sm:px-4 py-2 sm:py-3" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0rem))' }}>
@@ -76,6 +127,12 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
         <div className="flex items-center gap-2 mb-2 px-3 py-1.5 bg-gray-700 rounded-lg text-sm">
           <FiPaperclip size={14} className="text-indigo-400 shrink-0" />
           <span className="text-gray-200 truncate flex-1 min-w-0">{file.name}</span>
+          {scanning && (
+            <span className="flex items-center gap-1.5 text-xs text-amber-400 shrink-0">
+              <span className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+              Scanning...
+            </span>
+          )}
           <button
             onClick={removeFile}
             className="text-gray-400 hover:text-gray-200 transition-colors shrink-0"
@@ -129,7 +186,11 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
           disabled={!canSend || disabled}
           className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
         >
-          <FiSend size={16} />
+          {scanning ? (
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <FiSend size={16} />
+          )}
         </button>
       </div>
     </div>
