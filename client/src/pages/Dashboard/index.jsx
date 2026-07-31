@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useWorkspace } from '../../context/WorkspaceContext';
+import { useChat } from '../../context/ChatContext';
 import {
   FiGrid,
   FiCheckSquare,
@@ -31,13 +32,13 @@ const AI_SUGGESTIONS = [
 const Dashboard = () => {
   const { user } = useAuth();
   const { workspaces, loading: workspacesLoading, loadWorkspaces } = useWorkspace();
+  const { unreadCount } = useChat();
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState([]);
   const [tasksLoading, setTasksLoading] = useState(true);
   const [activities, setActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(true);
-  const [unreadCount, setUnreadCount] = useState(0);
   const [aiTipIndex, setAiTipIndex] = useState(0);
 
   useEffect(() => {
@@ -49,12 +50,6 @@ const Dashboard = () => {
       .then(({ data }) => setActivities(data.data || []))
       .catch(() => setActivities([]))
       .finally(() => setActivitiesLoading(false));
-  }, []);
-
-  useEffect(() => {
-    dashboardService.getUnreadCount()
-      .then(({ data }) => setUnreadCount(data.data?.unreadCount || 0))
-      .catch(() => setUnreadCount(0));
   }, []);
 
   useEffect(() => {

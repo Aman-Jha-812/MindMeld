@@ -3,8 +3,8 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { FiHome, FiMessageSquare, FiGrid, FiLogOut, FiMenu, FiX, FiHash, FiUsers, FiBell, FiUser } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useWorkspace } from '../../context/WorkspaceContext';
+import { useChat } from '../../context/ChatContext';
 import Avatar from '../common/Avatar';
-import api from '../../services/api';
 
 const mainNavLinks = [
   { to: '/dashboard', icon: FiHome, label: 'Dashboard' },
@@ -15,17 +15,15 @@ const mainNavLinks = [
 const AppLayout = () => {
   const { user, logout } = useAuth();
   const { activeWorkspace, members } = useWorkspace();
+  const { unreadCount, refreshUnreadCount } = useChat();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [mobileRightSidebar, setMobileRightSidebar] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    api.get('/notifications/unread-count')
-      .then(({ data }) => setUnreadCount(data.count || data.data || 0))
-      .catch(() => {});
-  }, []);
+    refreshUnreadCount();
+  }, [refreshUnreadCount]);
 
   const showRightSidebar = activeWorkspace && (location.pathname.startsWith('/chat') || location.pathname.startsWith('/workspace'));
 

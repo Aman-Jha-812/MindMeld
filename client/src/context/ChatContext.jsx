@@ -13,6 +13,7 @@ export const ChatProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [typingUsers, setTypingUsers] = useState({});
   const [isConnected, setIsConnected] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const socketRef = useRef(null);
   const pendingChannelRef = useRef(null);
   const [socketVersion, setSocketVersion] = useState(0);
@@ -71,6 +72,10 @@ export const ChatProvider = ({ children }) => {
     });
     socket.on('message_deleted', ({ messageId }) => {
       setMessages((prev) => prev.filter((msg) => msg._id !== messageId && msg.id !== messageId));
+    });
+    socket.on('notification', (notification) => {
+      console.log('Received notification event:', notification?._id);
+      setUnreadCount((prev) => prev + 1);
     });
     setSocketVersion((v) => v + 1);
     return () => {
@@ -175,6 +180,21 @@ export const ChatProvider = ({ children }) => {
     });
   }, []);
 
+  const refreshUnreadCount = useCallback(async () => {
+    try {
+      const { data } = await api.get('/notifications/unread-count');
+      setUnreadCount(data.data?.unreadCount || 0);
+    } catch (err) {
+      console.error('Failed to fetch unread count:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      refreshUnreadCount();
+    }
+  }, [user, refreshUnreadCount]);
+
   const value = {
     channels,
     activeChannel,
@@ -183,6 +203,8 @@ export const ChatProvider = ({ children }) => {
     typingUsers,
     isConnected,
     socketVersion,
+    unreadCount,
+    refreshUnreadCount,
     setActiveChannel,
     loadMessages,
     sendMessage,
