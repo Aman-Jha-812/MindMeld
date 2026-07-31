@@ -3,6 +3,35 @@ import * as chatService from '../services/chatService';
 import api from '../services/api';
 import { useAuth } from './AuthContext';
 import { io } from 'socket.io-client';
+import toast from 'react-hot-toast';
+
+const playNotificationSound = () => {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const play = () => {
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1174.66, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.4);
+    };
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(play).catch(() => {});
+    } else {
+      play();
+    }
+  } catch (err) {
+    console.error('Failed to play notification sound:', err);
+  }
+};
 
 const ChatContext = createContext(null);
 
@@ -76,6 +105,13 @@ export const ChatProvider = ({ children }) => {
     socket.on('notification', (notification) => {
       console.log('Received notification event:', notification?._id);
       setUnreadCount((prev) => prev + 1);
+      playNotificationSound();
+      if (notification?.title) {
+        toast(notification.message || notification.title, {
+          icon: '🔔',
+          duration: 5000,
+        });
+      }
     });
     setSocketVersion((v) => v + 1);
     return () => {
