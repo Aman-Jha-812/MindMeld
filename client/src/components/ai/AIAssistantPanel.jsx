@@ -48,14 +48,13 @@ const AIAssistantPanel = ({ isOpen, onClose, channelMessages }) => {
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
-  const [response, setResponse] = useState('');
   const responseEndRef = useRef(null);
 
   useEffect(() => {
     if (responseEndRef.current) {
       responseEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [response, history]);
+  }, [history]);
 
   const formatMessages = (msgs, count = 10) =>
     msgs
@@ -68,23 +67,19 @@ const AIAssistantPanel = ({ isOpen, onClose, channelMessages }) => {
     const query = prompt.trim();
     if (!query) return;
     setLoading(true);
-    setResponse('');
     const newEntry = { role: 'user', content: query, tab: activeTab, timestamp: new Date() };
     setHistory((prev) => [newEntry, ...prev]);
     setPrompt('');
+    const updateEntry = (response) =>
+      setHistory((prev) => prev.map((h) => (h === newEntry ? { ...h, response } : h)));
     try {
       const contextText = formatMessages(channelMessages, 10);
       const res = await aiService.sendQuery(query, activeTab, contextText);
       const result = res.data?.data || res.data || res;
-      setResponse(result);
-      setHistory((prev) =>
-        prev.map((h) =>
-          h === newEntry ? { ...h, response: result } : h
-        )
-      );
+      updateEntry(result);
     } catch (err) {
       const msg = err?.response?.data?.message || err.message || 'Unable to get AI response. Please try again.';
-      setResponse(`Error: ${msg}`);
+      updateEntry(`Error: ${msg}`);
     } finally {
       setLoading(false);
     }
@@ -172,12 +167,6 @@ const AIAssistantPanel = ({ isOpen, onClose, channelMessages }) => {
             )}
           </div>
         ))}
-
-        {response && (
-          <div className="ml-8 p-3 bg-gray-800 rounded-lg">
-            <ResponseRenderer content={response} />
-          </div>
-        )}
 
         {loading && (
           <div className="flex items-center gap-2 text-sm text-gray-400 ml-8">
