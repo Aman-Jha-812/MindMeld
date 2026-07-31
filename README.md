@@ -281,10 +281,29 @@ The app will be at `http://localhost:3000` (client) and `http://localhost:5000` 
 15. **How did you handle a Cloudinary account suspension?**
     - Added client-side NSFW detection so the abusive content never gets uploaded, then contacted support to restore the account.
 
+### Database / Data Modeling
+16. **What collections does the database have and how are they related?**
+    - `User`, `Workspace` (has `owner`, `channels`, `members`), `WorkspaceMember` (membership + role, unique per workspace+user), `Channel`, `Message`, `Task`, `Notification`. Workspaces contain channels; messages belong to a channel; tasks belong to a workspace and can have an assignee; notifications point to a recipient with embedded `data` (e.g. `channelId`) for scoping read-state.
+
+17. **Why do you have a separate `WorkspaceMember` model instead of storing roles in `Workspace.members`?**
+    - Keeps the `Workspace.members` array simple and queryable, and gives a clean place to store per-member metadata (role, joinedAt) with a unique index on `{ workspace, user }` to prevent duplicates. It also makes "workspaces a user belongs to" queries fast.
+
+18. **How do you keep chat message history performant?**
+    - Messages are indexed by channel and use cursor-based pagination (`before` timestamp) so loading older messages is efficient. New messages are pushed via socket and deduped by `_id` on the client.
+
+### Advanced / Engineering
+19. **How do you do optimistic updates and rollback?**
+    - In the task status toggle, the UI updates the status immediately (optimistic), then calls `PUT /api/tasks/:id`. If the API fails, the previous status is restored (rollback) and an error toast is shown — this makes the UI feel instant.
+
+20. **What would you do to scale this app if it grew?**
+    - Horizontally scale the API; add a Redis adapter to Socket.io so sockets share rooms across instances; move the NSFW check to a server-side queue; add rate limiting and message pagination tuning; use a CDN for static assets; and move email/AI/file-processing to background jobs.
+
 ### Follow-up / Design questions you should be ready for
 - "How would you scale real-time chat to 10k users?" → horizontally scale Socket.io with a Redis adapter for sticky rooms.
 - "How would you prevent notification spam?" → dedupe by message/channel, batch notifications, only notify when user is not viewing the channel (already done for the active channel).
 - "How would you secure the API?" → helmet, rate limiting, JWT on protected routes, sanitize inputs, CORS allowlist.
+- "How do you debug a bug in production?" → check logs on Render, reproduce locally with the same env, add temporary logging, fix and redeploy, then confirm on the live URL.
+- "How do you handle secrets and keys?" → never commit `.env` (gitignored); set secrets in the Render dashboard; rotate keys if they are ever exposed.
 
 ---
 
