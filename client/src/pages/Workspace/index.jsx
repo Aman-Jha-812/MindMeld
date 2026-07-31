@@ -182,6 +182,23 @@ const WorkspacePage = () => {
     }
   };
 
+  const handleTaskStatusChange = async (task, nextStatus) => {
+    const taskId = task._id || task.id;
+    const prevStatus = task.status;
+    setTasks((prev) => prev.map((t) =>
+      (t._id === taskId || t.id === taskId) ? { ...t, status: nextStatus } : t
+    ));
+    try {
+      await api.put(`/tasks/${taskId}`, { status: nextStatus });
+      toast.success(`Task ${nextStatus === 'completed' ? 'completed' : 'updated'}`);
+    } catch (err) {
+      setTasks((prev) => prev.map((t) =>
+        (t._id === taskId || t.id === taskId) ? { ...t, status: prevStatus } : t
+      ));
+      toast.error(err.response?.data?.message || 'Failed to update task');
+    }
+  };
+
   const currentUserRole = activeWorkspace?.role?.toLowerCase() || 'member';
   const isAdmin = currentUserRole === 'owner' || currentUserRole === 'admin';
   const channelCount = channels.length;
@@ -509,7 +526,7 @@ const WorkspacePage = () => {
           </div>
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2">
             {tasks.length > 0 ? tasks.map((task) => (
-              <TaskCard key={task._id || task.id} task={task} />
+              <TaskCard key={task._id || task.id} task={task} onStatusChange={handleTaskStatusChange} />
             )) : (
               <p className="text-xs text-gray-600 text-center py-4">No tasks yet</p>
             )}
