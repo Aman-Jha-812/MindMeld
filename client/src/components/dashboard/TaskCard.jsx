@@ -1,4 +1,4 @@
-import { FiMenu, FiCheckCircle, FiCircle, FiAlertCircle, FiCalendar } from 'react-icons/fi';
+import { FiCheckCircle, FiCircle, FiAlertCircle, FiCalendar } from 'react-icons/fi';
 
 const PRIORITY_STYLES = {
   urgent: 'bg-red-500/20 text-red-400 border-red-500/30',
@@ -14,7 +14,7 @@ const STATUS_ICONS = {
   done: FiCheckCircle,
 };
 
-const TaskCard = ({ task, onStatusChange, onClick, dragHandleProps }) => {
+const TaskCard = ({ task, onStatusChange, onClick }) => {
   const priority = task?.priority?.toLowerCase() || 'medium';
   const priorityStyle = PRIORITY_STYLES[priority] || PRIORITY_STYLES.medium;
   const isDone = task?.status === 'completed' || task?.status === 'done';
@@ -34,14 +34,6 @@ const TaskCard = ({ task, onStatusChange, onClick, dragHandleProps }) => {
       onClick={() => onClick?.(task)}
       className="flex items-center gap-3 px-3 py-2.5 bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-colors cursor-pointer group"
     >
-      <div
-        {...dragHandleProps}
-        className="text-gray-600 hover:text-gray-400 transition-colors cursor-grab active:cursor-grabbing flex-shrink-0"
-        title="Drag to reorder"
-      >
-        <FiMenu size={16} />
-      </div>
-
       <button
         onClick={(e) => {
           e.stopPropagation();
