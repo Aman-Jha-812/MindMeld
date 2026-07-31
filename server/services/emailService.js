@@ -35,7 +35,7 @@ function getTransporter() {
   return transporter;
 }
 
-const FROM_ADDRESS = `"MindMeld" <${process.env.SMTP_USER}>`;
+const FROM_ADDRESS = `"MindMeld" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`;
 
 async function sendEmail({ to, subject, text, html }) {
   try {
