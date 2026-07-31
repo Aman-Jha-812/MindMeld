@@ -19,15 +19,16 @@ async function saveHistory(userId, workspaceId, prompt, response, type, metadata
 export const chatSummary = async (req, res) => {
   try {
     const { conversation, prompt, workspaceId } = req.body;
-    const text = prompt?.trim() || conversation?.trim();
-    if (!text) {
+    const query = prompt?.trim();
+    const context = conversation?.trim();
+    if (!query && !context) {
       return res.status(400).json({ success: false, message: 'Conversation text is required' });
     }
-    const result = await aiService.generateChatSummary(text);
+    const result = await aiService.generateChatSummary({ query, context });
     if (result === null) {
       return res.status(502).json({ success: false, message: 'AI service error. Check server logs for details.' });
     }
-    saveHistory(req.user._id, workspaceId, prompt || text, result, 'chat_summary');
+    saveHistory(req.user._id, workspaceId, query || context, result, 'chat_summary');
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     console.error('chatSummary error:', error);

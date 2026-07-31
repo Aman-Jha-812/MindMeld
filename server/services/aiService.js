@@ -1,10 +1,17 @@
 import { safeGenerate } from '../config/openai.js';
 
-async function generateChatSummary(conversationText) {
+async function generateChatSummary({ query, context }) {
   try {
-    const prompt = conversationText.startsWith('Summarize')
-      ? conversationText
-      : `Summarize the following conversation concisely:\n\n${conversationText}`;
+    let prompt;
+    if (query && context) {
+      prompt = `Answer the user's request using the conversation below as context when relevant, otherwise answer it directly.\n\nConversation:\n${context}\n\nRequest:\n${query}`;
+    } else if (query) {
+      prompt = query;
+    } else if (context) {
+      prompt = `Summarize the following conversation concisely:\n\n${context}`;
+    } else {
+      throw new Error('Nothing to process');
+    }
     return await safeGenerate(prompt);
   } catch (error) {
     console.error('generateChatSummary error:', error);
