@@ -4,7 +4,6 @@ import Workspace from '../models/Workspace.js';
 import WorkspaceMember from '../models/WorkspaceMember.js';
 import Notification from '../models/Notification.js';
 import { emitToChannel, sendNotification } from '../services/socketService.js';
-import { onlineUsers } from '../config/socket.js';
 
 export const getMessages = async (req, res) => {
   try {
@@ -97,8 +96,7 @@ export const sendMessage = async (req, res) => {
       .map((m) => m.user.toString())
       .filter((memberId) =>
         memberId !== senderId &&
-        !mentionIds.includes(memberId) &&
-        onlineUsers.has(memberId)
+        !mentionIds.includes(memberId)
       )
       .map((memberId) =>
         Notification.create({

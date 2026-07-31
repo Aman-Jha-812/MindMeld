@@ -81,6 +81,27 @@ export const markAllAsRead = async (req, res) => {
   }
 };
 
+export const markChannelAsRead = async (req, res) => {
+  try {
+    const { channelId } = req.params;
+    await Notification.updateMany(
+      { recipient: req.user._id, isRead: false, 'data.channelId': channelId },
+      { isRead: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Channel notifications marked as read',
+    });
+  } catch (error) {
+    console.error('MarkChannelAsRead error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Server error marking channel notifications as read',
+    });
+  }
+};
+
 export const getUnreadCount = async (req, res) => {
   try {
     const count = await Notification.countDocuments({
