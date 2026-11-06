@@ -46,24 +46,24 @@ const Home = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen bg-dark-950 flex flex-col">
+    <div className="min-h-screen bg-app flex flex-col">
       <header className="flex items-center justify-between px-6 py-4 md:px-12 lg:px-24">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center">
             <FiCpu className="text-white w-5 h-5" />
           </div>
-          <span className="text-xl font-bold text-dark-100">MindMeld</span>
+          <span className="text-xl font-bold text-ink">MindMeld</span>
         </div>
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="text-dark-300 hover:text-dark-100 transition-colors px-4 py-2 text-sm font-medium"
+            className="text-ink-secondary hover:text-ink transition-colors px-4 py-2 text-sm font-medium"
           >
             Sign In
           </Link>
           <Link
             to="/register"
-            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="bg-brand hover:bg-brand-hover text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             Get Started
           </Link>
@@ -72,28 +72,28 @@ const Home = () => {
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-16">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600/10 rounded-2xl mb-6">
-            <FiCpu className="text-primary-400 w-8 h-8" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-soft rounded-2xl mb-6">
+            <FiCpu className="text-brand w-8 h-8" />
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-dark-100 mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-4">
             MindMeld
           </h1>
-          <p className="text-xl md:text-2xl text-primary-400 font-semibold mb-3">
+          <p className="text-xl md:text-2xl text-brand font-semibold mb-3">
             AI-Powered Team Collaboration
           </p>
-          <p className="text-dark-400 text-lg mb-10 max-w-2xl mx-auto">
+          <p className="text-ink-secondary text-lg mb-10 max-w-2xl mx-auto">
             Slack + Notion + Trello + ChatGPT — all in one place
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/register"
-              className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors w-full sm:w-auto text-center"
+              className="bg-brand hover:bg-brand-hover text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors w-full sm:w-auto text-center"
             >
               Get Started
             </Link>
             <Link
               to="/login"
-              className="bg-dark-700 hover:bg-dark-600 text-dark-100 px-8 py-3 rounded-lg text-lg font-medium transition-colors w-full sm:w-auto text-center"
+              className="bg-card border border-line hover:bg-hover text-ink px-8 py-3 rounded-lg text-lg font-medium transition-colors w-full sm:w-auto text-center"
             >
               Sign In
             </Link>
@@ -101,7 +101,7 @@ const Home = () => {
         </div>
 
         <div className="mt-24 max-w-5xl mx-auto w-full">
-          <h2 className="text-2xl font-bold text-dark-100 text-center mb-12">
+          <h2 className="text-2xl font-bold text-ink text-center mb-12">
             Everything your team needs
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -110,15 +110,15 @@ const Home = () => {
               return (
                 <div
                   key={feature.title}
-                  className="card hover:border-primary-600/50 transition-all duration-300 group"
+                  className="card hover:border-brand transition-all duration-300 group"
                 >
-                  <div className="w-12 h-12 bg-primary-600/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary-600/20 transition-colors">
-                    <Icon className="text-primary-400 w-6 h-6" />
+                  <div className="w-12 h-12 bg-brand-soft rounded-xl flex items-center justify-center mb-4 group-hover:bg-brand-soft transition-colors">
+                    <Icon className="text-brand w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-semibold text-dark-100 mb-2">
+                  <h3 className="text-lg font-semibold text-ink mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-dark-400 text-sm leading-relaxed">
+                  <p className="text-ink-secondary text-sm leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -128,8 +128,8 @@ const Home = () => {
         </div>
       </main>
 
-      <footer className="border-t border-dark-800 py-6 px-6">
-        <p className="text-center text-dark-500 text-sm">
+      <footer className="border-t border-line py-6 px-6">
+        <p className="text-center text-ink-muted text-sm">
           &copy; {new Date().getFullYear()} MindMeld. All rights reserved.
         </p>
       </footer>

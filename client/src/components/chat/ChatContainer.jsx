@@ -87,16 +87,16 @@ const ChatContainer = ({ workspaceId, channelId, workspaceName }) => {
   );
 
   return (
-    <div className="flex flex-col w-full h-full bg-gray-900">
+    <div className="flex flex-col w-full h-full bg-card">
       <ChatHeader
         channel={activeChannel}
         workspaceName={workspaceName}
         onToggleMembers={() => {}}
       />
       {error && (
-        <div className="px-4 py-2 bg-red-900/50 border-b border-red-800 text-sm text-red-200 flex items-center justify-between">
+        <div className="px-4 py-2 bg-danger-soft border-b border-danger text-sm text-danger flex items-center justify-between">
           <span>{error}</span>
-          <button onClick={() => setError(null)} className="text-red-400 hover:text-red-200 ml-2">
+          <button onClick={() => setError(null)} className="text-danger hover:text-danger ml-2">
             <FiX size={14} />
           </button>
         </div>

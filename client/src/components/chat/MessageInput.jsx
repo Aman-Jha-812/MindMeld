@@ -122,20 +122,20 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
   const canSend = (text.trim().length > 0 || !!file) && !scanning;
 
   return (
-    <div className="border-t border-gray-700 bg-gray-800 px-2 sm:px-4 py-2 sm:py-3" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0rem))' }}>
+    <div className="border-t border-line bg-card px-2 sm:px-4 py-2 sm:py-3" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0rem))' }}>
       {file && (
-        <div className="flex items-center gap-2 mb-2 px-3 py-1.5 bg-gray-700 rounded-lg text-sm">
-          <FiPaperclip size={14} className="text-indigo-400 shrink-0" />
-          <span className="text-gray-200 truncate flex-1 min-w-0">{file.name}</span>
+        <div className="flex items-center gap-2 mb-2 px-3 py-1.5 bg-hover rounded-lg text-sm">
+          <FiPaperclip size={14} className="text-brand shrink-0" />
+          <span className="text-ink truncate flex-1 min-w-0">{file.name}</span>
           {scanning && (
-            <span className="flex items-center gap-1.5 text-xs text-amber-400 shrink-0">
-              <span className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+            <span className="flex items-center gap-1.5 text-xs text-warning shrink-0">
+              <span className="w-3 h-3 border-2 border-warning border-t-transparent rounded-full animate-spin" />
               Scanning...
             </span>
           )}
           <button
             onClick={removeFile}
-            className="text-gray-400 hover:text-gray-200 transition-colors shrink-0"
+            className="text-ink-secondary hover:text-ink transition-colors shrink-0"
           >
             <FiX size={16} />
           </button>
@@ -151,7 +151,7 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
             disabled={disabled}
             rows={1}
             placeholder="Type a message..."
-            className="w-full resize-none bg-gray-700 text-gray-100 placeholder-gray-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full resize-none bg-card text-ink placeholder-ink-muted border border-line rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
         <div className="flex items-center gap-1 shrink-0">
@@ -159,7 +159,7 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
             type="button"
             onClick={() => {}}
             disabled={disabled}
-            className="hidden sm:flex p-1.5 text-gray-400 hover:text-gray-200 transition-colors disabled:opacity-50"
+            className="hidden sm:flex p-1.5 text-ink-secondary hover:text-ink transition-colors disabled:opacity-50"
             title="Emoji picker"
           >
             <FiSmile size={16} />
@@ -168,7 +168,7 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled}
-            className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors disabled:opacity-50"
+            className="p-1.5 text-ink-secondary hover:text-ink transition-colors disabled:opacity-50"
             title="Attach file"
           >
             <FiPaperclip size={16} />
@@ -184,7 +184,7 @@ const MessageInput = ({ onSend, onTyping, disabled }) => {
         <button
           onClick={handleSend}
           disabled={!canSend || disabled}
-          className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+          className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-brand text-white hover:bg-brand-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
         >
           {scanning ? (
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

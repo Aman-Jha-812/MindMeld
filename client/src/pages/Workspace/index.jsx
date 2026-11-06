@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { useChat } from '../../context/ChatContext';
@@ -15,7 +15,6 @@ import {
   FiUserPlus,
   FiChevronDown,
   FiCheckSquare,
-  FiCpu,
   FiMessageSquare,
   FiX,
   FiEye,
@@ -33,6 +32,7 @@ import EmptyState from '../../components/common/EmptyState';
 import InviteModal from './components/InviteModal';
 import AIAssistantPanel from '../../components/ai/AIAssistantPanel';
 import TaskCard from '../../components/dashboard/TaskCard';
+import { LuSparkles } from 'react-icons/lu';
 import api from '../../services/api';
 
 const ROLE_BADGE_VARIANTS = {
@@ -51,6 +51,7 @@ const WorkspacePage = () => {
     members,
     loading,
     loadWorkspaceById,
+    loadWorkspaces,
     loadMembers,
     createWorkspace,
     removeMember,
@@ -74,7 +75,16 @@ const WorkspacePage = () => {
   const [creating, setCreating] = useState(false);
   const [createWorkspaceForm, setCreateWorkspaceForm] = useState({ name: '', description: '' });
   const [creatingWorkspace, setCreatingWorkspace] = useState(false);
-  const [showAI, setShowAI] = useState(false);
+  const [showAI, setShowAI] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches,
+  );
+  const [showAiHint] = useState(() => {
+    try {
+      return !window.localStorage.getItem('aiBtnSeen');
+    } catch {
+      return false;
+    }
+  });
   const [tasks, setTasks] = useState([]);
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [taskForm, setTaskForm] = useState({ title: '', priority: 'medium', dueDate: '', assignedTo: '' });
@@ -85,6 +95,7 @@ const WorkspacePage = () => {
     setCreatingWorkspace(true);
     try {
       const workspace = await createWorkspace(createWorkspaceForm);
+      await loadWorkspaces().catch(() => {});
       navigate(`/workspace/${workspace._id || workspace.id}`);
       toast.success('Workspace created!');
     } catch (err) {
@@ -92,7 +103,16 @@ const WorkspacePage = () => {
     } finally {
       setCreatingWorkspace(false);
     }
-  }, [createWorkspaceForm, createWorkspace, navigate]);
+  }, [createWorkspaceForm, createWorkspace, loadWorkspaces, navigate]);
+
+  useEffect(() => {
+    if (!showAiHint) return;
+    try {
+      window.localStorage.setItem('aiBtnSeen', '1');
+    } catch {
+      return;
+    }
+  }, [showAiHint]);
 
   useEffect(() => {
     if (workspaceId && !isNewWorkspace) {
@@ -219,10 +239,10 @@ const WorkspacePage = () => {
     return (
       <div className="max-w-lg mx-auto py-12 px-4">
         <div className="card">
-          <h2 className="text-xl font-bold text-gray-100 mb-6">Create Workspace</h2>
+          <h2 className="text-xl font-bold text-ink mb-6">Create Workspace</h2>
           <form onSubmit={handleCreateWorkspace} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Workspace Name</label>
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">Workspace Name</label>
               <input
                 type="text"
                 value={createWorkspaceForm.name}
@@ -233,7 +253,7 @@ const WorkspacePage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Description</label>
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">Description</label>
               <textarea
                 value={createWorkspaceForm.description}
                 onChange={(e) => setCreateWorkspaceForm((prev) => ({ ...prev, description: e.target.value }))}
@@ -277,11 +297,11 @@ const WorkspacePage = () => {
   }
 
   return (
-    <div className="flex h-[calc(100vh-3rem)] -m-6 relative">
+    <div className="flex h-[calc(100vh-3rem)] min-w-0 overflow-hidden -m-6 relative">
       {/* Mobile sidebar toggle */}
       <button
         onClick={() => setShowSidebar(true)}
-        className="fixed top-4 left-4 z-30 lg:hidden p-2 rounded-lg bg-gray-900 border border-gray-700 text-gray-300 hover:text-gray-100 shadow-lg"
+        className="fixed top-4 left-4 z-30 lg:hidden p-2 rounded-lg bg-sidebar border border-line text-ink-secondary hover:text-ink shadow-lg"
       >
         <FiMenu size={20} />
       </button>
@@ -294,39 +314,59 @@ const WorkspacePage = () => {
       )}
 
       {/* Channel sidebar */}
-      <div className={`lg:flex flex-col w-72 bg-gray-900 border-r border-gray-800 flex-shrink-0 ${showSidebar ? 'fixed inset-y-0 left-0 z-50 shadow-2xl animate-slideIn' : 'hidden'}`}>
+      <div className={`lg:flex flex-col w-60 bg-sidebar border-r border-line flex-shrink-0 ${showSidebar ? 'fixed inset-y-0 left-0 z-50 shadow-2xl animate-slideIn' : 'hidden'}`}>
         <div className="flex lg:hidden items-center justify-between px-4 pt-3 pb-1">
-          <span className="text-sm font-semibold text-gray-100">Workspace</span>
-          <button onClick={() => setShowSidebar(false)} className="p-1 text-gray-400 hover:text-gray-200">
+          <Link to="/dashboard" className="text-sm text-brand hover:text-brand-hover font-medium" onClick={() => setShowSidebar(false)}>
+            ← Dashboard
+          </Link>
+          <button onClick={() => setShowSidebar(false)} className="p-1 text-ink-secondary hover:text-ink">
             <FiX size={18} />
           </button>
         </div>
-        <div className="px-4 py-4 border-b border-gray-800">
+        <div className="px-4 py-4 border-b border-line">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-semibold text-gray-100 truncate">{activeWorkspace.name}</h2>
-              <p className="text-xs text-gray-500 truncate mt-0.5">{activeWorkspace.description || 'No description'}</p>
+              <h2 className="text-sm font-semibold text-ink truncate">{activeWorkspace.name}</h2>
+              <p className="text-xs text-ink-muted truncate mt-0.5">{activeWorkspace.description || 'No description'}</p>
             </div>
-            <button
-              onClick={() => setShowAI(!showAI)}
-              className={`p-1.5 rounded-lg transition-colors ${showAI ? 'bg-indigo-600/20 text-indigo-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'}`}
-              title="AI Assistant"
-            >
-              <FiCpu size={16} />
-            </button>
-            <div className="relative ml-2">
-              <button
-                onClick={() => setSettingsOpen(!settingsOpen)}
-                className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-lg transition-colors"
-              >
-                <FiSettings size={16} />
-              </button>
+            <div className="flex items-center gap-2 ml-2">
+              <div className="relative group">
+                <button
+                  type="button"
+                  onClick={() => setShowAI(!showAI)}
+                  aria-label="Open AI Assistant"
+                  aria-pressed={showAI}
+                  aria-describedby="ai-assistant-tooltip"
+                  className={`relative inline-flex h-8 w-8 items-center justify-center gap-1.5 rounded-full border text-sm font-medium shadow-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar sm:w-auto sm:px-3 ${
+                    showAI
+                      ? 'border-brand bg-brand-soft text-brand'
+                      : 'border-brand bg-brand text-white hover:bg-brand-hover'
+                  } ${showAiHint ? 'ai-attention' : ''}`}
+                >
+                  <LuSparkles size={16} aria-hidden="true" />
+                  <span className="hidden sm:inline">Ask AI</span>
+                </button>
+                <span
+                  id="ai-assistant-tooltip"
+                  role="tooltip"
+                  className="pointer-events-none invisible absolute left-1/2 top-full z-50 mt-2 w-56 -translate-x-1/2 rounded-lg bg-ink px-3 py-2 text-xs font-normal text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+                >
+                  AI Assistant: summarize chat, generate code, debug
+                </span>
+              </div>
+              <div className="relative flex h-8 items-center">
+                <button
+                  onClick={() => setSettingsOpen(!settingsOpen)}
+                  className="p-1.5 text-ink-secondary hover:text-ink hover:bg-hover rounded-lg transition-colors"
+                >
+                  <FiSettings size={16} />
+                </button>
               {settingsOpen && (
-                <div className="absolute right-0 top-full mt-1 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-30 py-1">
+                <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-line rounded-lg shadow-xl z-30 py-1">
                   {isAdmin && (
                     <button
                       onClick={() => { setShowInviteModal(true); setSettingsOpen(false); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-ink-secondary hover:bg-hover transition-colors"
                     >
                       <FiUserPlus size={14} />
                       Invite Members
@@ -335,7 +375,7 @@ const WorkspacePage = () => {
                   {isAdmin && (
                     <button
                       onClick={() => { setShowCreateChannel(true); setSettingsOpen(false); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-ink-secondary hover:bg-hover transition-colors"
                     >
                       <FiPlus size={14} />
                       Create Channel
@@ -344,7 +384,7 @@ const WorkspacePage = () => {
                   {isAdmin && (
                     <button
                       onClick={() => { handleDelete(); setSettingsOpen(false); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-gray-700 transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-danger hover:bg-hover transition-colors"
                     >
                       <FiTrash2 size={14} />
                       Delete Workspace
@@ -352,7 +392,7 @@ const WorkspacePage = () => {
                   )}
                   <button
                     onClick={() => { handleLeave(); setSettingsOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-ink-secondary hover:bg-hover transition-colors"
                   >
                     <FiLogOut size={14} />
                     Leave Workspace
@@ -360,8 +400,9 @@ const WorkspacePage = () => {
                 </div>
               )}
             </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+          <div className="flex items-center gap-2 mt-2 text-xs text-ink-muted">
             <span className="flex items-center gap-1">
               <FiHash size={12} />
               {channelCount} channels
@@ -383,49 +424,27 @@ const WorkspacePage = () => {
           />
         </div>
 
-        <div className="px-4 py-3 border-t border-gray-800">
+        <div className="px-4 py-3 border-t border-line">
           <button
-            onClick={() => setShowMembers(!showMembers)}
-            className="w-full flex items-center gap-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+            type="button"
+            onClick={() => setShowMembers(prev => !prev)}
+            aria-expanded={showMembers}
+            aria-controls="workspace-members-panel"
+            className="w-full flex items-center gap-2 text-sm text-ink-secondary hover:text-ink transition-colors"
           >
             <FiUsers size={16} />
             <span>Members ({members.length})</span>
             <FiChevronDown
               size={14}
-              className={`ml-auto transition-transform ${showMembers ? 'rotate-180' : ''}`}
+              className={`ml-auto transition-transform duration-200 ${showMembers ? 'rotate-180' : ''}`}
             />
           </button>
-          {showMembers && (
-            <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
-              {members.map((member) => {
-                const memberId = member._id || member.id;
-                const memberName = member.name || member.user?.name || 'Unknown';
-                const memberRole = (member.role || member.user?.role || 'member').toLowerCase();
-                return (
-                  <div key={memberId} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-800 transition-colors group">
-                    <Avatar
-                      src={member.avatar || member.user?.avatar}
-                      name={memberName}
-                      size="sm"
-                    />
-                    <span className="text-sm text-gray-300 truncate flex-1">{memberName}</span>
-                    <Badge variant={ROLE_BADGE_VARIANTS[memberRole] || 'default'} size="sm">
-                      {memberRole}
-                    </Badge>
-                  </div>
-                );
-              })}
-              {members.length === 0 && (
-                <p className="text-xs text-gray-600 px-2 py-1">No members loaded</p>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0 pt-12 lg:pt-0">
+      <div className="flex flex-1 basis-0 flex-col min-w-0 pt-12 lg:pt-0">
         {channels.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center bg-gray-900">
+          <div className="flex-1 flex items-center justify-center bg-card">
             <EmptyState
               icon={<FiMessageSquare size={48} />}
               title="No channels yet"
@@ -441,87 +460,95 @@ const WorkspacePage = () => {
               workspaceName={activeWorkspace?.name}
             />
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-gray-900">
+          <div className="flex-1 flex items-center justify-center bg-card">
             <LoadingSpinner size="lg" />
           </div>
         )}
       </div>
 
       {isAdmin && (
-        <div className={`lg:flex flex-col w-80 bg-gray-900 border-l border-gray-800 flex-shrink-0 overflow-y-auto ${showMembers ? 'fixed inset-y-0 right-0 z-50 shadow-2xl animate-slideIn lg:relative lg:inset-auto lg:z-auto lg:shadow-none' : 'hidden'}`}>
-          <div className="px-5 py-4 border-b border-gray-800">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-                <FiUsers size={16} className="text-indigo-400" />
-                Members ({members.length})
-              </h3>
-              <button
-                onClick={() => setShowInviteModal(true)}
-                className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-lg transition-colors"
-                title="Invite member"
-              >
-                <FiUserPlus size={16} />
-              </button>
+        <div className={`${showMembers ? 'flex' : 'hidden'} lg:flex flex-col w-[280px] bg-sidebar border-l border-line flex-shrink-0 overflow-y-auto ${showMembers ? 'fixed inset-y-0 right-0 z-50 shadow-2xl animate-slideIn lg:static lg:inset-auto lg:z-auto lg:shadow-none' : ''}`}>
+          <div
+            id="workspace-members-panel"
+            aria-hidden={!showMembers}
+            className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out ${
+              showMembers ? 'max-h-[420px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+            }`}
+          >
+            <div className="px-5 py-4 border-b border-line">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-ink-secondary flex items-center gap-2">
+                  <FiUsers size={16} className="text-brand" />
+                  Members ({members.length})
+                </h3>
+                <button
+                  onClick={() => setShowInviteModal(true)}
+                  className="p-1.5 text-ink-secondary hover:text-ink hover:bg-hover rounded-lg transition-colors"
+                  title="Invite member"
+                >
+                  <FiUserPlus size={16} />
+                </button>
+              </div>
+            </div>
+            <div className="max-h-72 overflow-y-auto px-3 py-3 space-y-1">
+              {members.map((member) => {
+                const memberId = member._id || member.id;
+                const memberName = member.name || member.user?.name || 'Unknown';
+                const memberRole = (member.role || member.user?.role || 'member').toLowerCase();
+                const isOnline = member.isOnline ?? true;
+                return (
+                  <div
+                    key={memberId}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-hover transition-colors group"
+                  >
+                    <div className="relative flex-shrink-0">
+                      <Avatar
+                        src={member.avatar || member.user?.avatar}
+                        name={memberName}
+                        size="sm"
+                      />
+                      <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-sidebar ${
+                        isOnline ? 'bg-success' : 'bg-ink-muted'
+                      }`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-ink truncate">{memberName}</p>
+                      <p className="text-xs text-ink-muted">
+                        {isOnline ? 'Online' : 'Offline'}
+                      </p>
+                    </div>
+                    <Badge variant={ROLE_BADGE_VARIANTS[memberRole] || 'default'} size="sm">
+                      {memberRole}
+                    </Badge>
+                    {isAdmin && memberRole !== 'owner' && (
+                      <button
+                        onClick={() => handleRemoveMember(memberId)}
+                        className="p-1 text-ink-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-all"
+                        title="Remove member"
+                      >
+                        <FiX size={14} />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+              {members.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-8 text-ink-muted">
+                  <FiUsers size={24} className="mb-2" />
+                  <p className="text-sm">No members</p>
+                </div>
+              )}
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
-            {members.map((member) => {
-              const memberId = member._id || member.id;
-              const memberName = member.name || member.user?.name || 'Unknown';
-              const memberRole = (member.role || member.user?.role || 'member').toLowerCase();
-              const isOnline = member.isOnline ?? true;
-              return (
-                <div
-                  key={memberId}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800/60 transition-colors group"
-                >
-                  <div className="relative flex-shrink-0">
-                    <Avatar
-                      src={member.avatar || member.user?.avatar}
-                      name={memberName}
-                      size="sm"
-                    />
-                    <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-gray-900 ${
-                      isOnline ? 'bg-green-500' : 'bg-gray-500'
-                    }`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-200 truncate">{memberName}</p>
-                    <p className="text-xs text-gray-500">
-                      {isOnline ? 'Online' : 'Offline'}
-                    </p>
-                  </div>
-                  <Badge variant={ROLE_BADGE_VARIANTS[memberRole] || 'default'} size="sm">
-                    {memberRole}
-                  </Badge>
-                  {isAdmin && memberRole !== 'owner' && (
-                    <button
-                      onClick={() => handleRemoveMember(memberId)}
-                      className="p-1 text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
-                      title="Remove member"
-                    >
-                      <FiX size={14} />
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-            {members.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-8 text-gray-500">
-                <FiUsers size={24} className="mb-2" />
-                <p className="text-sm">No members</p>
-              </div>
-            )}
-          </div>
-          <div className="px-5 py-4 border-b border-gray-800">
+          <div className="px-5 py-4 border-b border-line">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-                <FiCheckSquare size={16} className="text-indigo-400" />
+              <h3 className="text-sm font-semibold text-ink-secondary flex items-center gap-2">
+                <FiCheckSquare size={16} className="text-brand" />
                 Tasks
               </h3>
               <button
                 onClick={() => setShowCreateTask(true)}
-                className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-lg transition-colors"
+                className="p-1.5 text-ink-secondary hover:text-ink hover:bg-hover rounded-lg transition-colors"
                 title="Create task"
               >
                 <FiPlus size={16} />
@@ -532,13 +559,13 @@ const WorkspacePage = () => {
             {tasks.length > 0 ? tasks.map((task) => (
               <TaskCard key={task._id || task.id} task={task} onStatusChange={handleTaskStatusChange} />
             )) : (
-              <p className="text-xs text-gray-600 text-center py-4">No tasks yet</p>
+              <p className="text-xs text-ink-muted text-center py-4">No tasks yet</p>
             )}
           </div>
-          <div className="px-5 py-4 border-t border-gray-800">
+          <div className="px-5 py-4 border-t border-line">
             <button
               onClick={() => setShowInviteModal(true)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-brand text-white text-sm font-medium rounded-lg hover:bg-brand-hover transition-colors"
             >
               <FiUserPlus size={16} />
               Invite Member
@@ -555,36 +582,36 @@ const WorkspacePage = () => {
       >
         <form onSubmit={handleCreateChannel} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Channel Name</label>
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">Channel Name</label>
             <div className="relative">
-              <FiHash className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
+              <FiHash className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted w-4 h-4" />
               <input
                 type="text"
                 value={createForm.name}
                 onChange={(e) => setCreateForm((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g. project-alpha"
-                className="w-full bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg pl-10 pr-3 py-2 text-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-card text-ink placeholder-ink-muted rounded-lg pl-10 pr-3 py-2 text-sm border border-line focus:outline-none focus:ring-1 focus:ring-brand"
                 autoFocus
                 required
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Description</label>
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">Description</label>
             <input
               type="text"
               value={createForm.description}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, description: e.target.value }))}
               placeholder="What's this channel about?"
-              className="w-full bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg px-3 py-2 text-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full bg-card text-ink placeholder-ink-muted rounded-lg px-3 py-2 text-sm border border-line focus:outline-none focus:ring-1 focus:ring-brand"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Type</label>
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">Type</label>
             <select
               value={createForm.type}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, type: e.target.value }))}
-              className="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2 text-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full bg-card text-ink rounded-lg px-3 py-2 text-sm border border-line focus:outline-none focus:ring-1 focus:ring-brand"
             >
               <option value="general">General</option>
               <option value="development">Development</option>
@@ -596,14 +623,14 @@ const WorkspacePage = () => {
             <button
               type="button"
               onClick={() => { setShowCreateChannel(false); setCreateForm({ name: '', description: '', type: 'general' }); }}
-              className="px-4 py-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+              className="px-4 py-2 text-sm text-ink-secondary hover:text-ink transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={creating || !createForm.name.trim()}
-              className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-brand text-white text-sm font-medium rounded-lg hover:bg-brand-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {creating ? 'Creating...' : 'Create Channel'}
             </button>
@@ -626,11 +653,11 @@ const WorkspacePage = () => {
       <Modal isOpen={showCreateTask} onClose={() => setShowCreateTask(false)} title="Create Task" size="sm">
         <form onSubmit={handleCreateTask} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Title</label>
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">Title</label>
             <input type="text" value={taskForm.title} onChange={(e) => setTaskForm(prev => ({...prev, title: e.target.value}))} className="input-field" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Priority</label>
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">Priority</label>
             <select value={taskForm.priority} onChange={(e) => setTaskForm(prev => ({...prev, priority: e.target.value}))} className="input-field">
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -639,11 +666,11 @@ const WorkspacePage = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Due Date</label>
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">Due Date</label>
             <input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm(prev => ({...prev, dueDate: e.target.value}))} className="input-field" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Assign To</label>
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">Assign To</label>
             <select
               value={taskForm.assignedTo}
               onChange={(e) => setTaskForm(prev => ({...prev, assignedTo: e.target.value}))}

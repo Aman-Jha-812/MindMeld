@@ -12,15 +12,15 @@ const Sidebar = ({ children, isOpen, onClose, side = 'left' }) => {
   }, [isOpen]);
 
   const positionClasses = side === 'right'
-    ? 'right-0 border-l border-dark-700'
-    : 'left-0 border-r border-dark-700';
+    ? 'right-0 border-l border-line'
+    : 'left-0 border-r border-line';
 
   const slideAnim = side === 'right' ? 'animate-slideInRight' : 'animate-slideIn';
 
   return (
     <>
       <aside
-        className={`hidden lg:flex flex-col h-screen fixed top-0 ${positionClasses} bg-dark-900 w-64 overflow-y-auto z-30`}
+        className={`hidden lg:flex flex-col h-screen fixed top-0 ${positionClasses} bg-sidebar w-64 overflow-y-auto z-30`}
       >
         {children}
       </aside>
@@ -32,12 +32,12 @@ const Sidebar = ({ children, isOpen, onClose, side = 'left' }) => {
             onClick={onClose}
           />
           <aside
-            className={`fixed top-0 ${positionClasses} h-screen w-64 bg-dark-900 overflow-y-auto z-50 shadow-2xl ${slideAnim}`}
+            className={`fixed top-0 ${positionClasses} h-screen w-64 bg-sidebar overflow-y-auto z-50 shadow-2xl ${slideAnim}`}
           >
             <div className="flex justify-end p-4">
               <button
                 onClick={onClose}
-                className="p-1 rounded-lg text-dark-400 hover:text-dark-100 hover:bg-dark-700 transition-colors duration-200"
+                className="p-1 rounded-lg text-ink-secondary hover:text-ink hover:bg-hover transition-colors duration-200"
               >
                 <FiX size={20} />
               </button>

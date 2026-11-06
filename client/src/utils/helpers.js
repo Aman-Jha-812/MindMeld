@@ -21,11 +21,10 @@ export const truncateText = (text, maxLength = 100) => {
 };
 
 export const generateAvatarColor = (name) => {
-  if (!name) return '#6b7280';
+  if (!name) return '#5B6663';
   const colors = [
-    '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e',
-    '#14b8a6', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6',
-    '#a855f7', '#d946ef', '#ec4899', '#f43f5e',
+    '#0F766E', '#C2410C', '#B7791F', '#2F6B4F', '#8B5E3C',
+    '#2563A8', '#2F855A', '#9A6700', '#B42318', '#115E59',
   ];
   let hash = 0;
   for (let i = 0; i < name.length; i++) {

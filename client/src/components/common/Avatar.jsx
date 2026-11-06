@@ -8,16 +8,16 @@ const sizeMap = {
 };
 
 const bgColors = [
-  'bg-red-500',
-  'bg-blue-500',
-  'bg-green-500',
-  'bg-yellow-500',
-  'bg-purple-500',
-  'bg-pink-500',
-  'bg-indigo-500',
-  'bg-teal-500',
-  'bg-orange-500',
-  'bg-cyan-500',
+  'bg-brand',
+  'bg-accent',
+  'bg-warning',
+  'bg-success',
+  'bg-info',
+  'bg-[#8B5E3C]',
+  'bg-[#2F6B4F]',
+  'bg-[#115E59]',
+  'bg-danger',
+  'bg-[#B7791F]',
 ];
 
 const getInitials = (name) => {

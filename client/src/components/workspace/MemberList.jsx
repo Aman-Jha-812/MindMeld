@@ -18,25 +18,25 @@ const MemberList = ({ members = [], currentUserId, onRemove, onRoleChange, isAdm
   });
 
   return (
-    <div className="flex flex-col h-full bg-dark-900 border-l border-dark-700">
-      <div className="px-4 py-3 border-b border-dark-700">
+    <div className="flex flex-col h-full bg-sidebar border-l border-line">
+      <div className="px-4 py-3 border-b border-line">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-dark-100 flex items-center gap-2">
-            <FiUsers size={16} className="text-indigo-400" />
+          <h3 className="text-sm font-semibold text-ink flex items-center gap-2">
+            <FiUsers size={16} className="text-brand" />
             Members
           </h3>
-          <span className="text-xs text-dark-400 bg-dark-700 px-2 py-0.5 rounded-full">
+          <span className="text-xs text-ink-secondary bg-hover px-2 py-0.5 rounded-full">
             {members.length}
           </span>
         </div>
         <div className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400" size={14} />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary" size={14} />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search members..."
-            className="w-full bg-dark-800 text-dark-200 placeholder-dark-500 rounded-lg pl-9 pr-3 py-1.5 text-sm border border-dark-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full bg-card text-ink placeholder-ink-muted rounded-lg pl-9 pr-3 py-1.5 text-sm border border-line-strong focus:outline-none focus:ring-1 focus:ring-brand"
           />
         </div>
       </div>
@@ -51,7 +51,7 @@ const MemberList = ({ members = [], currentUserId, onRemove, onRoleChange, isAdm
           return (
             <div
               key={memberId}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-800/60 transition-colors group"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-hover/60 transition-colors group"
             >
               <div className="relative flex-shrink-0">
                 <Avatar
@@ -60,17 +60,17 @@ const MemberList = ({ members = [], currentUserId, onRemove, onRoleChange, isAdm
                   size="sm"
                 />
                 <span
-                  className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-dark-900 ${
-                    isOnline ? 'bg-green-500' : 'bg-dark-500'
+className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-sidebar ${
+  isOnline ? 'bg-success' : 'bg-ink-muted'
                   }`}
                 />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm text-dark-100 truncate">{memberName}</p>
-                  {isSelf && <span className="text-[10px] text-dark-500">(you)</span>}
+                  <p className="text-sm text-ink truncate">{memberName}</p>
+                  {isSelf && <span className="text-[10px] text-ink-muted">(you)</span>}
                 </div>
-                <p className="text-xs text-dark-500">{isOnline ? 'Online' : 'Offline'}</p>
+                <p className="text-xs text-ink-muted">{isOnline ? 'Online' : 'Offline'}</p>
               </div>
               <Badge variant={ROLE_VARIANTS[memberRole] || 'default'} size="sm">
                 {memberRole}
@@ -80,14 +80,14 @@ const MemberList = ({ members = [], currentUserId, onRemove, onRoleChange, isAdm
                   <select
                     value={memberRole}
                     onChange={(e) => onRoleChange?.(memberId, e.target.value)}
-                    className="bg-dark-800 text-dark-200 text-xs rounded border border-dark-600 px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="bg-card text-ink text-xs rounded border border-line-strong px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-brand"
                   >
                     <option value="member">member</option>
                     <option value="admin">admin</option>
                   </select>
                   <button
                     onClick={() => onRemove?.(memberId)}
-                    className="p-1 text-dark-500 hover:text-red-400 transition-colors"
+                    className="p-1 text-ink-muted hover:text-danger transition-colors"
                     title="Remove member"
                   >
                     <FiX size={14} />
@@ -98,7 +98,7 @@ const MemberList = ({ members = [], currentUserId, onRemove, onRoleChange, isAdm
           );
         })}
         {filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-8 text-dark-500">
+          <div className="flex flex-col items-center justify-center py-8 text-ink-muted">
             <FiUsers size={24} className="mb-2" />
             <p className="text-sm">{search ? 'No members match your search' : 'No members'}</p>
           </div>

@@ -41,14 +41,14 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        className="p-2 rounded-lg text-dark-400 hover:text-dark-100 hover:bg-dark-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200"
+        className="p-2 rounded-lg text-ink-secondary hover:text-ink hover:bg-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200"
       >
         <FiChevronLeft size={18} />
       </button>
 
       {pageNumbers.map((p, idx) =>
         p === '...' ? (
-          <span key={`ellipsis-${idx}`} className="px-2 text-dark-400 select-none">
+          <span key={`ellipsis-${idx}`} className="px-2 text-ink-muted select-none">
             ...
           </span>
         ) : (
@@ -57,8 +57,8 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
             onClick={() => onPageChange(p)}
             className={`min-w-[36px] h-9 rounded-lg text-sm font-medium transition-colors duration-200 ${
               p === page
-                ? 'bg-primary-600 text-white'
-                : 'text-dark-300 hover:text-dark-100 hover:bg-dark-700'
+                ? 'bg-brand text-brand-on'
+                : 'text-ink-secondary hover:text-ink hover:bg-hover'
             }`}
           >
             {p}
@@ -69,7 +69,7 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
-        className="p-2 rounded-lg text-dark-400 hover:text-dark-100 hover:bg-dark-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200"
+        className="p-2 rounded-lg text-ink-secondary hover:text-ink hover:bg-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200"
       >
         <FiChevronRight size={18} />
       </button>

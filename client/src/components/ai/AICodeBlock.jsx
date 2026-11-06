@@ -45,23 +45,23 @@ const highlightLine = (line, lang) => {
   let result = line;
   keywords.forEach((kw) => {
     const regex = new RegExp(`\\b(${kw})\\b`, 'g');
-    result = result.replace(regex, '<span class="text-purple-400">$1</span>');
+    result = result.replace(regex, '<span class="text-accent">$1</span>');
   });
   result = result.replace(
     /\/\/.*$/gm,
-    '<span class="text-gray-500">$&</span>'
+    '<span class="text-ink-muted">$&</span>'
   );
   result = result.replace(
     /\/\*[\s\S]*?\*\//g,
-    '<span class="text-gray-500">$&</span>'
+    '<span class="text-ink-muted">$&</span>'
   );
   result = result.replace(
     /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g,
-    '<span class="text-green-400">$1</span>'
+    '<span class="text-success">$1</span>'
   );
   result = result.replace(
     /(\b\d+\.?\d*\b)/g,
-    '<span class="text-yellow-400">$1</span>'
+    '<span class="text-warning">$1</span>'
   );
   return result;
 };
@@ -90,17 +90,17 @@ const AICodeBlock = ({ code, language }) => {
   const lines = code.split('\n');
 
   return (
-    <div className="relative group bg-gray-950 rounded-lg overflow-hidden border border-gray-800 my-2">
-      <div className="flex items-center justify-between px-4 py-1.5 bg-gray-900 border-b border-gray-800">
-        <span className="text-xs text-gray-500 font-mono uppercase">{lang}</span>
+      <div className="relative group bg-hover rounded-lg overflow-hidden border border-line my-2">
+      <div className="flex items-center justify-between px-4 py-1.5 bg-sidebar border-b border-line">
+        <span className="text-xs text-ink-muted font-mono uppercase">{lang}</span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-300 transition-colors"
+          className="flex items-center gap-1 text-xs text-ink-muted hover:text-ink-secondary transition-colors"
         >
           {copied ? (
             <>
-              <FiCheck size={14} className="text-green-400" />
-              <span className="text-green-400">Copied</span>
+              <FiCheck size={14} className="text-success" />
+              <span className="text-success">Copied</span>
             </>
           ) : (
             <>
@@ -114,12 +114,12 @@ const AICodeBlock = ({ code, language }) => {
         <code className="font-mono text-sm leading-relaxed">
           {lines.map((line, i) => (
             <div key={i} className="flex">
-              <span className="text-gray-600 text-xs select-none w-8 text-right mr-4 flex-shrink-0">
+              <span className="text-ink-muted text-xs select-none w-8 text-right mr-4 flex-shrink-0">
                 {i + 1}
               </span>
               <span
                 dangerouslySetInnerHTML={{ __html: highlightLine(line, lang) }}
-                className="text-gray-200"
+                className="text-ink"
               />
             </div>
           ))}

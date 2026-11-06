@@ -1,10 +1,10 @@
 import { FiCheckCircle, FiCircle, FiAlertCircle, FiCalendar } from 'react-icons/fi';
 
 const PRIORITY_STYLES = {
-  urgent: 'bg-red-500/20 text-red-400 border-red-500/30',
-  high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-  medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-  low: 'bg-green-500/20 text-green-400 border-green-500/30',
+  urgent: 'bg-danger-soft text-danger border-danger',
+  high: 'bg-danger-soft text-danger border-danger',
+  medium: 'bg-warning-soft text-warning border-warning',
+  low: 'bg-info-soft text-info border-info',
 };
 
 const STATUS_ICONS = {
@@ -32,7 +32,7 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
   return (
     <div
       onClick={() => onClick?.(task)}
-      className="flex items-center gap-3 px-3 py-2.5 bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-colors cursor-pointer group"
+      className="flex items-center gap-3 px-3 py-2.5 bg-card rounded-lg border border-line hover:border-line-strong transition-colors cursor-pointer group"
     >
       <button
         onClick={(e) => {
@@ -41,8 +41,8 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
         }}
         className={`flex-shrink-0 transition-colors ${
           isDone
-            ? 'text-green-400'
-            : 'text-gray-500 hover:text-gray-300'
+            ? 'text-success'
+            : 'text-ink-muted hover:text-ink-secondary'
         }`}
         title={`Mark as ${nextStatus.replace('_', ' ')}`}
       >
@@ -51,7 +51,7 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
 
       <div className="flex-1 min-w-0">
         <p className={`text-sm truncate ${
-          isDone ? 'text-gray-500 line-through' : 'text-gray-200'
+          isDone ? 'text-ink-muted line-through' : 'text-ink'
         }`}>
           {task?.title || 'Untitled task'}
         </p>
@@ -61,7 +61,7 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
           </span>
           {dueDateStr && (
             <span className={`flex items-center gap-0.5 text-xs ${
-              isOverdue ? 'text-red-400' : 'text-gray-500'
+              isOverdue ? 'text-danger' : 'text-ink-muted'
             }`}>
               <FiCalendar size={11} />
               {dueDateStr}
@@ -79,7 +79,7 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
               className="w-6 h-6 rounded-full object-cover"
             />
           ) : (
-            <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-medium text-white">
+            <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center text-[10px] font-medium text-white">
               {task.assignee.name?.charAt(0)?.toUpperCase() || '?'}
             </div>
           )}
@@ -95,7 +95,7 @@ const TaskCard = ({ task, onStatusChange, onClick }) => {
               className="w-6 h-6 rounded-full object-cover"
             />
           ) : (
-            <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-medium text-white">
+            <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center text-[10px] font-medium text-white">
               {task.assignedTo.name?.charAt(0)?.toUpperCase() || '?'}
             </div>
           )}

@@ -36,13 +36,13 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
         onClick={onClose}
       />
       <div
-        className={`relative w-full ${sizeClasses[size] || sizeClasses.md} bg-dark-800 border border-dark-700 rounded-xl shadow-2xl transform transition-all duration-300 animate-fadeIn`}
+        className={`relative w-full ${sizeClasses[size] || sizeClasses.md} bg-card border border-line rounded-xl shadow-2xl transform transition-all duration-300 animate-fadeIn`}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
-          <h2 className="text-lg font-semibold text-dark-100">{title}</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-line">
+          <h2 className="text-lg font-semibold text-ink">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-dark-400 hover:text-dark-100 hover:bg-dark-700 transition-colors duration-200"
+            className="p-1 rounded-lg text-ink-secondary hover:text-ink hover:bg-hover transition-colors duration-200"
           >
             <FiX size={20} />
           </button>

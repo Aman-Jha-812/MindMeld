@@ -108,17 +108,17 @@ const Settings = () => {
       case 'general':
         return (
           <div className="card">
-            <h3 className="text-lg font-semibold text-dark-100 mb-5 flex items-center gap-2">
-              <FiUser className="text-primary-400" />
+            <h3 className="text-lg font-semibold text-ink mb-5 flex items-center gap-2">
+              <FiUser className="text-brand" />
               General Information
             </h3>
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1.5">
+                <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                  <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                   <input
                     type="text"
                     value={general.name}
@@ -130,11 +130,11 @@ const Settings = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1.5">
+                <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                   Email
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                  <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                   <input
                     type="email"
                     value={user?.email || ''}
@@ -144,7 +144,7 @@ const Settings = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1.5">
+                <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                   Bio
                 </label>
                 <textarea
@@ -201,17 +201,17 @@ const Settings = () => {
       case 'security':
         return (
           <div className="card">
-            <h3 className="text-lg font-semibold text-dark-100 mb-5 flex items-center gap-2">
-              <FiLock className="text-primary-400" />
+            <h3 className="text-lg font-semibold text-ink mb-5 flex items-center gap-2">
+              <FiLock className="text-brand" />
               Change Password
             </h3>
             <form onSubmit={handleChangePassword} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1.5">
+                <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                   Current Password
                 </label>
                 <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                  <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                   <input
                     type={showPasswords.current ? 'text' : 'password'}
                     value={passwordForm.currentPassword}
@@ -227,7 +227,7 @@ const Settings = () => {
                   <button
                     type="button"
                     onClick={() => togglePass('current')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-300"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-secondary hover:text-ink-secondary"
                   >
                     {showPasswords.current ? (
                       <FiEyeOff className="w-4 h-4" />
@@ -238,11 +238,11 @@ const Settings = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1.5">
+                <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                   New Password
                 </label>
                 <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                  <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                   <input
                     type={showPasswords.new ? 'text' : 'password'}
                     value={passwordForm.newPassword}
@@ -259,7 +259,7 @@ const Settings = () => {
                   <button
                     type="button"
                     onClick={() => togglePass('new')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-300"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-secondary hover:text-ink-secondary"
                   >
                     {showPasswords.new ? (
                       <FiEyeOff className="w-4 h-4" />
@@ -270,11 +270,11 @@ const Settings = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1.5">
+                <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                   Confirm New Password
                 </label>
                 <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                  <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                   <input
                     type={showPasswords.confirm ? 'text' : 'password'}
                     value={passwordForm.confirmNewPassword}
@@ -290,7 +290,7 @@ const Settings = () => {
                   <button
                     type="button"
                     onClick={() => togglePass('confirm')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-300"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-secondary hover:text-ink-secondary"
                   >
                     {showPasswords.confirm ? (
                       <FiEyeOff className="w-4 h-4" />
@@ -344,24 +344,24 @@ const Settings = () => {
       case 'notifications':
         return (
           <div className="card">
-            <h3 className="text-lg font-semibold text-dark-100 mb-5 flex items-center gap-2">
-              <FiBell className="text-primary-400" />
+            <h3 className="text-lg font-semibold text-ink mb-5 flex items-center gap-2">
+              <FiBell className="text-brand" />
               Notification Preferences
             </h3>
             <div className="space-y-1">
               {Object.entries(notifications).map(([key, value]) => (
                 <div
                   key={key}
-                  className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-dark-700/50 transition-colors"
+                  className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-hover/50 transition-colors"
                 >
-                  <span className="text-dark-200 text-sm capitalize">
+                  <span className="text-ink text-sm capitalize">
                     {key.replace(/([A-Z])/g, ' $1').trim()}
                   </span>
                   <button
                     type="button"
                     onClick={() => toggleNotification(key)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      value ? 'bg-primary-600' : 'bg-dark-600'
+                      value ? 'bg-brand' : 'bg-line-strong'
                     }`}
                   >
                     <span
@@ -373,7 +373,7 @@ const Settings = () => {
                 </div>
               ))}
             </div>
-            <div className="mt-6 flex justify-end pt-4 border-t border-dark-700">
+            <div className="mt-6 flex justify-end pt-4 border-t border-line">
               <button
                 onClick={() => {
                   toast.success('Notification preferences saved');
@@ -394,9 +394,9 @@ const Settings = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6">
-      <h1 className="text-2xl font-bold text-dark-100 mb-6">Settings</h1>
+      <h1 className="text-2xl font-bold text-ink mb-6">Settings</h1>
 
-      <div className="flex gap-1 mb-6 bg-dark-800 rounded-lg p-1 border border-dark-700 w-fit">
+      <div className="flex gap-1 mb-6 bg-card rounded-lg p-1 border border-line w-fit">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -406,8 +406,8 @@ const Settings = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-primary-600 text-white shadow-sm'
-                  : 'text-dark-300 hover:text-dark-100'
+                  ? 'bg-brand text-white shadow-sm'
+                  : 'text-ink-secondary hover:text-ink'
               }`}
             >
               <Icon className="w-4 h-4" />

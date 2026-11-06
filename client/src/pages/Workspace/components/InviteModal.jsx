@@ -65,38 +65,38 @@ const InviteModal = ({ isOpen, onClose, workspaceId }) => {
     <Modal isOpen={isOpen} onClose={onClose} title="Invite Members" size="sm">
       <form onSubmit={handleSendInvite} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1.5">
+          <label className="block text-sm font-medium text-ink-secondary mb-1.5">
             Email Addresses
           </label>
           <div className="relative">
-            <FiMail className="absolute left-3 top-3 text-gray-500 w-4 h-4" />
+            <FiMail className="absolute left-3 top-3 text-ink-muted w-4 h-4" />
             <textarea
               value={emails}
               onChange={(e) => setEmails(e.target.value)}
               placeholder="you@example.com"
               rows={3}
-              className="w-full bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg pl-10 pr-3 py-2 text-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+              className="w-full bg-card text-ink placeholder-ink-muted rounded-lg pl-10 pr-3 py-2 text-sm border border-line focus:outline-none focus:ring-1 focus:ring-brand resize-none"
             />
           </div>
-          <p className="text-xs text-gray-500 mt-1.5">
+          <p className="text-xs text-ink-muted mt-1.5">
             Separate multiple emails with commas, semicolons, or new lines.
           </p>
         </div>
 
         {result && result.length > 0 && (
-          <div className="space-y-1.5 bg-gray-800/50 rounded-lg p-3 max-h-32 overflow-y-auto">
+          <div className="space-y-1.5 bg-hover rounded-lg p-3 max-h-32 overflow-y-auto">
             {result.map((r, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
                 {r.success ? (
-                  <FiCheckCircle size={14} className="text-green-400 flex-shrink-0" />
+                  <FiCheckCircle size={14} className="text-success flex-shrink-0" />
                 ) : (
-                  <FiAlertCircle size={14} className="text-red-400 flex-shrink-0" />
+                  <FiAlertCircle size={14} className="text-danger flex-shrink-0" />
                 )}
-                <span className={`truncate ${r.success ? 'text-gray-300' : 'text-red-300'}`}>
+                <span className={`truncate ${r.success ? 'text-ink-secondary' : 'text-danger'}`}>
                   {r.email}
                 </span>
                 {!r.success && (
-                  <span className="text-xs text-red-400 flex-shrink-0">Failed</span>
+                  <span className="text-xs text-danger flex-shrink-0">Failed</span>
                 )}
               </div>
             ))}
@@ -107,14 +107,14 @@ const InviteModal = ({ isOpen, onClose, workspaceId }) => {
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+            className="px-4 py-2 text-sm text-ink-secondary hover:text-ink transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={sending || !emails.trim()}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 bg-brand text-white text-sm font-medium rounded-lg hover:bg-brand-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {sending ? (
               <>

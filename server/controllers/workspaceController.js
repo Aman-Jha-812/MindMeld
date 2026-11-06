@@ -70,10 +70,12 @@ export const createWorkspace = async (req, res) => {
 
 export const getWorkspaces = async (req, res) => {
   try {
-    const memberships = await WorkspaceMember.find({ user: req.user._id }).select('workspace');
-    const workspaceIds = memberships.map((m) => m.workspace);
-
-    const workspaces = await Workspace.find({ _id: { $in: workspaceIds } })
+    const workspaces = await Workspace.find({
+      $or: [
+        { owner: req.user._id },
+        { members: req.user._id },
+      ],
+    })
       .populate('channels')
       .populate('members', '-password');
 

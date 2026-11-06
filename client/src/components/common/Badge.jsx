@@ -1,9 +1,9 @@
 const variantStyles = {
-  default: 'bg-dark-700 text-dark-200',
-  success: 'bg-green-500/10 text-green-400',
-  warning: 'bg-yellow-500/10 text-yellow-400',
-  danger: 'bg-red-500/10 text-red-400',
-  info: 'bg-blue-500/10 text-blue-400',
+  default: 'bg-hover text-ink-secondary',
+  success: 'bg-success-soft text-success',
+  warning: 'bg-warning-soft text-warning',
+  danger: 'bg-danger-soft text-danger',
+  info: 'bg-info-soft text-info',
 };
 
 const sizeStyles = {

@@ -40,26 +40,26 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-app flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="card">
           <div className="flex flex-col items-center mb-8">
-            <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-brand rounded-xl flex items-center justify-center mb-4">
               <FiCpu className="text-white w-6 h-6" />
             </div>
-            <h1 className="text-2xl font-bold text-dark-100">Create account</h1>
-            <p className="text-dark-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-ink">Create account</h1>
+            <p className="text-ink-secondary text-sm mt-1">
               Join MindMeld today
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1.5">
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                 Full Name
               </label>
               <div className="relative">
-                <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                 <input
                   type="text"
                   {...register('name', {
@@ -74,16 +74,16 @@ const Register = () => {
                 />
               </div>
               {errors.name && (
-                <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
+                <p className="text-danger text-xs mt-1">{errors.name.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1.5">
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                 Email
               </label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                 <input
                   type="email"
                   {...register('email', {
@@ -98,16 +98,16 @@ const Register = () => {
                 />
               </div>
               {errors.email && (
-                <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>
+                <p className="text-danger text-xs mt-1">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1.5">
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   {...register('password', {
@@ -123,7 +123,7 @@ const Register = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-secondary hover:text-ink-secondary"
                 >
                   {showPassword ? (
                     <FiEyeOff className="w-4 h-4" />
@@ -133,16 +133,16 @@ const Register = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>
+                <p className="text-danger text-xs mt-1">{errors.password.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1.5">
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                 Confirm Password
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                 <input
                   type={showConfirm ? 'text' : 'password'}
                   {...register('confirmPassword', {
@@ -156,7 +156,7 @@ const Register = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-secondary hover:text-ink-secondary"
                 >
                   {showConfirm ? (
                     <FiEyeOff className="w-4 h-4" />
@@ -166,7 +166,7 @@ const Register = () => {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-400 text-xs mt-1">
+                <p className="text-danger text-xs mt-1">
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -206,11 +206,11 @@ const Register = () => {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-dark-400 text-sm">
+          <p className="mt-6 text-center text-ink-secondary text-sm">
             Already have an account?{' '}
             <Link
               to="/login"
-              className="text-primary-400 hover:text-primary-300 font-medium transition-colors"
+              className="text-brand hover:text-brand-hover font-medium transition-colors"
             >
               Sign in
             </Link>

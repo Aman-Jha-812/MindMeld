@@ -33,24 +33,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-app flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="card">
           <div className="flex flex-col items-center mb-8">
-            <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-brand rounded-xl flex items-center justify-center mb-4">
               <FiCpu className="text-white w-6 h-6" />
             </div>
-            <h1 className="text-2xl font-bold text-dark-100">Welcome back</h1>
-            <p className="text-dark-400 text-sm mt-1">Sign in to MindMeld</p>
+            <h1 className="text-2xl font-bold text-ink">Welcome back</h1>
+            <p className="text-ink-secondary text-sm mt-1">Sign in to MindMeld</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1.5">
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                 Email
               </label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                 <input
                   type="email"
                   {...register('email', {
@@ -65,16 +65,16 @@ const Login = () => {
                 />
               </div>
               {errors.email && (
-                <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>
+                <p className="text-danger text-xs mt-1">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1.5">
+              <label className="block text-sm font-medium text-ink-secondary mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   {...register('password', {
@@ -86,7 +86,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-secondary hover:text-ink-secondary"
                 >
                   {showPassword ? (
                     <FiEyeOff className="w-4 h-4" />
@@ -96,14 +96,14 @@ const Login = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>
+                <p className="text-danger text-xs mt-1">{errors.password.message}</p>
               )}
             </div>
 
             <div className="flex items-center justify-end">
               <Link
                 to="/forgot-password"
-                className="text-sm text-primary-400 hover:text-primary-300 transition-colors"
+                className="text-sm text-brand hover:text-brand-hover transition-colors"
               >
                 Forgot Password?
               </Link>
@@ -143,11 +143,11 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-dark-400 text-sm">
+          <p className="mt-6 text-center text-ink-secondary text-sm">
             Don&apos;t have an account?{' '}
             <Link
               to="/register"
-              className="text-primary-400 hover:text-primary-300 font-medium transition-colors"
+              className="text-brand hover:text-brand-hover font-medium transition-colors"
             >
               Sign up
             </Link>

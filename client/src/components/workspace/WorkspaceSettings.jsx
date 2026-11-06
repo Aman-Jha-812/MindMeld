@@ -69,37 +69,37 @@ const WorkspaceSettings = ({ workspace, isOpen, onClose }) => {
       <Modal isOpen={isOpen} onClose={onClose} title="Workspace Settings" size="lg">
         <div className="space-y-8">
           <section>
-            <h3 className="text-sm font-semibold text-dark-100 uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-semibold text-ink uppercase tracking-wider mb-4">
               General
             </h3>
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-dark-200 mb-1.5">
+                <label className="block text-sm font-medium text-ink mb-1.5">
                   Workspace Name
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-dark-800 text-dark-100 placeholder-dark-500 rounded-lg px-3 py-2 text-sm border border-dark-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-card text-ink placeholder-ink-muted rounded-lg px-3 py-2 text-sm border border-line-strong focus:outline-none focus:ring-1 focus:ring-brand"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-200 mb-1.5">
+                <label className="block text-sm font-medium text-ink mb-1.5">
                   Description
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full bg-dark-800 text-dark-100 placeholder-dark-500 rounded-lg px-3 py-2 text-sm border border-dark-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+                  className="w-full bg-card text-ink placeholder-ink-muted rounded-lg px-3 py-2 text-sm border border-line-strong focus:outline-none focus:ring-1 focus:ring-brand resize-none"
                 />
               </div>
               <button
                 type="submit"
                 disabled={saving || !name.trim()}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 bg-brand text-white text-sm font-medium rounded-lg hover:bg-brand-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <FiSave size={16} />
                 {saving ? 'Saving...' : 'Save Changes'}
@@ -107,37 +107,37 @@ const WorkspaceSettings = ({ workspace, isOpen, onClose }) => {
             </form>
           </section>
 
-          <section className="border-t border-dark-700 pt-6">
-            <h3 className="text-sm font-semibold text-red-400 uppercase tracking-wider mb-4">
+          <section className="border-t border-line pt-6">
+            <h3 className="text-sm font-semibold text-danger uppercase tracking-wider mb-4">
               Danger Zone
             </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-dark-800/50 border border-dark-700">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-hover border border-line">
                 <div>
-                  <p className="text-sm font-medium text-dark-100">Delete Workspace</p>
-                  <p className="text-xs text-dark-400 mt-0.5">
+                  <p className="text-sm font-medium text-ink">Delete Workspace</p>
+                  <p className="text-xs text-ink-secondary mt-0.5">
                     Permanently delete this workspace and all its data
                   </p>
                 </div>
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   disabled={!isAdmin}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-danger border border-danger rounded-lg hover:bg-danger-soft transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <FiTrash2 size={14} />
                   Delete
                 </button>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-dark-800/50 border border-dark-700">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-hover border border-line">
                 <div>
-                  <p className="text-sm font-medium text-dark-100">Leave Workspace</p>
-                  <p className="text-xs text-dark-400 mt-0.5">
+                  <p className="text-sm font-medium text-ink">Leave Workspace</p>
+                  <p className="text-xs text-ink-secondary mt-0.5">
                     Remove yourself from this workspace
                   </p>
                 </div>
                 <button
                   onClick={() => setShowLeaveConfirm(true)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-yellow-400 border border-yellow-500/30 rounded-lg hover:bg-yellow-500/10 transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-warning border border-warning rounded-lg hover:bg-warning-soft transition-colors"
                 >
                   <FiLogOut size={14} />
                   Leave

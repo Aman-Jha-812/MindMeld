@@ -11,6 +11,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AcceptInvite from './pages/AcceptInvite';
 import Dashboard from './pages/Dashboard';
+import WorkspacesPage from './pages/Workspaces';
 import WorkspacePage from './pages/Workspace';
 import ChatPage from './pages/Chat';
 import Profile from './pages/Profile';
@@ -31,6 +32,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/workspace" element={<WorkspacesPage />} />
                 <Route path="/workspace/:id" element={<WorkspacePage />} />
                 <Route path="/chat" element={<ChatPage />} />
                 <Route path="/chat/:workspaceId/:channelId" element={<ChatPage />} />

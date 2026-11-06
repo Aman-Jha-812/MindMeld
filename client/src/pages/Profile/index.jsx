@@ -24,7 +24,7 @@ const SocialLinkIcon = ({ url, children }) => {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-dark-400 hover:text-primary-400 transition-colors"
+      className="text-ink-secondary hover:text-brand transition-colors"
     >
       {children}
     </a>
@@ -133,7 +133,7 @@ const Profile = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 space-y-6">
-      <h1 className="text-2xl font-bold text-dark-100">Profile</h1>
+      <h1 className="text-2xl font-bold text-ink">Profile</h1>
 
       <div className="card">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
@@ -142,12 +142,12 @@ const Profile = () => {
               src={user.avatar}
               name={user.name}
               size="xl"
-              className="ring-2 ring-dark-700"
+              className="ring-2 ring-line"
             />
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="absolute inset-0 bg-dark-900/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute inset-0 bg-ink/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             >
               {uploading ? (
                 <svg
@@ -182,12 +182,12 @@ const Profile = () => {
             />
           </div>
           <div className="text-center sm:text-left flex-1">
-            <h2 className="text-xl font-semibold text-dark-100">
+            <h2 className="text-xl font-semibold text-ink">
               {user.name || 'User'}
             </h2>
-            <p className="text-dark-400 text-sm mt-1">{user.email}</p>
+            <p className="text-ink-secondary text-sm mt-1">{user.email}</p>
             {user.bio && (
-              <p className="text-dark-300 text-sm mt-2 max-w-md">{user.bio}</p>
+              <p className="text-ink-secondary text-sm mt-2 max-w-md">{user.bio}</p>
             )}
             <div className="flex items-center justify-center sm:justify-start gap-4 mt-3">
               <SocialLinkIcon url={formData.github}>
@@ -209,18 +209,18 @@ const Profile = () => {
 
       <div className="card">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-lg font-semibold text-dark-100 flex items-center gap-2">
-            <FiEdit2 className="text-primary-400" />
+          <h3 className="text-lg font-semibold text-ink flex items-center gap-2">
+            <FiEdit2 className="text-brand" />
             Edit Profile
           </h3>
         </div>
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               Full Name
             </label>
             <div className="relative">
-              <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+              <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
               <input
                 type="text"
                 name="name"
@@ -231,11 +231,11 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               Email
             </label>
             <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
               <input
                 type="email"
                 value={user.email}
@@ -245,7 +245,7 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               Bio
             </label>
             <textarea
@@ -258,20 +258,20 @@ const Profile = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               Skills
             </label>
             <div className="flex flex-wrap gap-2 mb-3">
               {skills.map((skill) => (
                 <span
                   key={skill}
-                  className="inline-flex items-center gap-1.5 bg-primary-600/10 text-primary-400 text-sm px-3 py-1 rounded-full"
+                  className="inline-flex items-center gap-1.5 bg-brand-soft text-brand text-sm px-3 py-1 rounded-full"
                 >
                   {skill}
                   <button
                     type="button"
                     onClick={() => removeSkill(skill)}
-                    className="hover:text-primary-300"
+                    className="hover:text-brand-hover"
                   >
                     <FiX className="w-3.5 h-3.5" />
                   </button>
@@ -305,17 +305,17 @@ const Profile = () => {
       </div>
 
       <div className="card">
-        <h3 className="text-lg font-semibold text-dark-100 mb-5 flex items-center gap-2">
-          <FiGlobe className="text-primary-400" />
+        <h3 className="text-lg font-semibold text-ink mb-5 flex items-center gap-2">
+          <FiGlobe className="text-brand" />
           Social Links
         </h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               GitHub
             </label>
             <div className="relative">
-              <FiGithub className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+              <FiGithub className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
               <input
                 type="url"
                 name="github"
@@ -327,11 +327,11 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               LinkedIn
             </label>
             <div className="relative">
-              <FiLinkedin className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+              <FiLinkedin className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
               <input
                 type="url"
                 name="linkedin"
@@ -343,11 +343,11 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               Twitter
             </label>
             <div className="relative">
-              <FaTwitter className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+              <FaTwitter className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
               <input
                 type="url"
                 name="twitter"
@@ -359,11 +359,11 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-sm font-medium text-ink-secondary mb-1.5">
               Website
             </label>
             <div className="relative">
-              <FiGlobe className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 w-4 h-4" />
+              <FiGlobe className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary w-4 h-4" />
               <input
                 type="url"
                 name="website"

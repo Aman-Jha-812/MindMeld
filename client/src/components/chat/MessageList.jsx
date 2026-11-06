@@ -27,17 +27,17 @@ const FilePreview = ({ fileUrl, fileName, fileSize, mimeType }) => (
     rel="noopener noreferrer"
     className="block mt-1 max-w-full sm:max-w-xs"
   >
-    <div className="flex items-center gap-2 p-1.5 sm:p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer">
+    <div className="flex items-center gap-2 p-1.5 sm:p-2 bg-card rounded-lg hover:bg-hover transition-colors cursor-pointer">
       {fileUrl && isImageMime(mimeType) ? (
         <img src={fileUrl} alt={fileName} className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded" />
       ) : (
-        <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-700 rounded">
-          <FiFile className="text-gray-400" size={14} />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-hover rounded">
+          <FiFile className="text-ink-secondary" size={14} />
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-xs sm:text-sm text-gray-200 truncate">{fileName}</p>
-        {fileSize && <p className="text-[10px] sm:text-xs text-gray-500">{fileSize}</p>}
+        <p className="text-xs sm:text-sm text-ink truncate">{fileName}</p>
+        {fileSize && <p className="text-[10px] sm:text-xs text-ink-muted">{fileSize}</p>}
       </div>
     </div>
   </a>
@@ -48,7 +48,7 @@ const MessageBubble = ({ message, onDelete }) => {
   return (
     <div className={`group flex gap-2 sm:gap-3 ${message.messageType === 'system' ? 'justify-center' : ''}`}>
       {message.messageType === 'system' ? (
-        <div className="text-gray-500 text-xs italic text-center py-1 px-3 bg-gray-800/50 rounded-full">
+        <div className="text-ink-muted text-xs italic text-center py-1 px-3 bg-hover rounded-full">
           {message.content}
         </div>
       ) : (
@@ -57,20 +57,20 @@ const MessageBubble = ({ message, onDelete }) => {
             {message.sender?.avatar ? (
               <img src={typeof message.sender.avatar === 'string' ? message.sender.avatar : message.sender.avatar?.url} alt="" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover mt-0.5" />
             ) : (
-              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] sm:text-xs font-medium text-white mt-0.5">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand flex items-center justify-center text-[10px] sm:text-xs font-medium text-white mt-0.5">
                 {message.sender?.name?.charAt(0)?.toUpperCase() || '?'}
               </div>
             )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-1 sm:gap-2 flex-wrap">
-              <span className="text-xs sm:text-sm font-semibold text-gray-100 truncate max-w-[120px] sm:max-w-[200px]">
+              <span className="text-xs sm:text-sm font-semibold text-ink truncate max-w-[120px] sm:max-w-[200px]">
                 {message.sender?.name || 'Unknown'}
               </span>
-              <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">{formatRelativeTime(message.createdAt)}</span>
+              <span className="text-[10px] sm:text-xs text-ink-muted whitespace-nowrap">{formatRelativeTime(message.createdAt)}</span>
               <button
                 onClick={() => onDelete?.(message._id || message.id)}
-                className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-500 hover:text-red-400 shrink-0"
+                className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1 text-ink-muted hover:text-danger shrink-0"
                 title="Delete message"
               >
                 <FiTrash2 size={12} />
@@ -82,9 +82,9 @@ const MessageBubble = ({ message, onDelete }) => {
               </a>
             )}
             {message.content && (
-              <p className="text-xs sm:text-sm text-gray-300 mt-0.5 whitespace-pre-wrap break-words">
+              <p className="text-xs sm:text-sm text-ink mt-0.5 whitespace-pre-wrap break-words">
                 {message.content}
-                {message.isEdited && <span className="text-gray-500 text-[10px] sm:text-xs ml-1 italic">(edited)</span>}
+                {message.isEdited && <span className="text-ink-muted text-[10px] sm:text-xs ml-1 italic">(edited)</span>}
               </p>
             )}
             {message.file?.url && !isImageMsg && (
@@ -99,7 +99,7 @@ const MessageBubble = ({ message, onDelete }) => {
 
 const LoadingSpinner = () => (
   <div className="flex justify-center py-4">
-    <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
   </div>
 );
 
@@ -168,7 +168,7 @@ const MessageList = ({ messages, loading, onLoadMore, hasMore }) => {
       <div ref={bottomRef} />
       {loading && messages?.length > 0 && <LoadingSpinner />}
       {(!messages || messages.length === 0) && !loading && (
-        <div className="flex flex-col items-center justify-center h-full text-gray-500">
+        <div className="flex flex-col items-center justify-center h-full text-ink-muted">
           <FiClock size={32} className="mb-2" />
           <p className="text-sm">No messages yet. Start the conversation!</p>
         </div>

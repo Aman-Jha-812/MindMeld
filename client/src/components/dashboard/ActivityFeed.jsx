@@ -1,11 +1,11 @@
 import { FiMessageSquare, FiCheckSquare, FiUserPlus, FiSend, FiPaperclip } from 'react-icons/fi';
 
 const ACTIVITY_ICONS = {
-  task_created: { icon: FiCheckSquare, color: 'text-blue-400 bg-blue-500/10' },
-  task_completed: { icon: FiCheckSquare, color: 'text-green-400 bg-green-500/10' },
-  member_joined: { icon: FiUserPlus, color: 'text-purple-400 bg-purple-500/10' },
-  message_sent: { icon: FiSend, color: 'text-indigo-400 bg-indigo-500/10' },
-  file_uploaded: { icon: FiPaperclip, color: 'text-yellow-400 bg-yellow-500/10' },
+  task_created: { icon: FiCheckSquare, color: 'text-info bg-info-soft' },
+  task_completed: { icon: FiCheckSquare, color: 'text-success bg-success-soft' },
+  member_joined: { icon: FiUserPlus, color: 'text-accent bg-accent-soft' },
+  message_sent: { icon: FiSend, color: 'text-brand bg-brand-soft' },
+  file_uploaded: { icon: FiPaperclip, color: 'text-warning bg-warning-soft' },
 };
 
 const formatActivityTime = (timestamp) => {
@@ -42,14 +42,14 @@ const ActivityFeed = ({ activities }) => {
   const sorted = activities
     ? [...activities].sort(
         (a, b) => new Date(b.createdAt || b.timestamp) - new Date(a.createdAt || a.timestamp)
-      )
+      ).slice(0, 5)
     : [];
 
   if (!sorted || sorted.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+      <div className="flex flex-col items-center justify-center py-12 text-ink-muted">
         <FiMessageSquare size={32} className="mb-2" />
-        <p className="text-sm">No recent activity</p>
+        <p className="text-sm">No recent activity yet</p>
       </div>
     );
   }
@@ -59,28 +59,28 @@ const ActivityFeed = ({ activities }) => {
       {sorted.map((activity, i) => {
         const typeInfo = ACTIVITY_ICONS[activity.type] || {
           icon: FiMessageSquare,
-          color: 'text-gray-400 bg-gray-500/10',
+          color: 'text-ink-secondary bg-ink-muted/10',
         };
         const Icon = typeInfo.icon;
 
         return (
           <div
             key={activity._id || activity.id || i}
-            className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800/50 transition-colors"
+            className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-hover/50 transition-colors"
           >
             <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${typeInfo.color}`}>
               <Icon size={14} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline gap-2">
-                <span className="text-sm font-medium text-gray-200">
+                <span className="text-sm font-medium text-ink">
                   {activity.user?.name || activity.userName || 'Someone'}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-ink-muted">
                   {formatActivityTime(activity.createdAt || activity.timestamp)}
                 </span>
               </div>
-              <p className="text-sm text-gray-400 truncate">
+              <p className="text-sm text-ink-secondary truncate">
                 {getActionText(activity)}
               </p>
             </div>

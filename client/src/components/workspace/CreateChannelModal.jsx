@@ -69,11 +69,11 @@ const CreateChannelModal = ({ isOpen, onClose, workspaceId, onCreated }) => {
     <Modal isOpen={isOpen} onClose={handleClose} title="Create Channel" size="sm">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-dark-200 mb-1.5">Type</label>
+          <label className="block text-sm font-medium text-ink mb-1.5">Type</label>
           <select
             value={type}
             onChange={(e) => handleTypeChange(e.target.value)}
-            className="w-full bg-dark-800 text-dark-100 rounded-lg px-3 py-2 text-sm border border-dark-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full bg-card text-ink rounded-lg px-3 py-2 text-sm border border-line-strong focus:outline-none focus:ring-1 focus:ring-brand"
           >
             {CHANNEL_TYPE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -83,17 +83,17 @@ const CreateChannelModal = ({ isOpen, onClose, workspaceId, onCreated }) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-dark-200 mb-1.5">
+          <label className="block text-sm font-medium text-ink mb-1.5">
             Channel Name {isCustom ? '' : '(auto-set)'}
           </label>
           <div className="relative">
-            <FiHash className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400" size={16} />
+            <FiHash className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-secondary" size={16} />
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={isCustom ? 'e.g. project-alpha' : ''}
-              className="w-full bg-dark-800 text-dark-100 placeholder-dark-500 rounded-lg pl-10 pr-3 py-2 text-sm border border-dark-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+              className="w-full bg-card text-ink placeholder-ink-muted rounded-lg pl-10 pr-3 py-2 text-sm border border-line-strong focus:outline-none focus:ring-1 focus:ring-brand disabled:opacity-50"
               readOnly={!isCustom}
               required
               autoFocus
@@ -101,27 +101,27 @@ const CreateChannelModal = ({ isOpen, onClose, workspaceId, onCreated }) => {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-dark-200 mb-1.5">Description</label>
+          <label className="block text-sm font-medium text-ink mb-1.5">Description</label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="What's this channel about?"
-            className="w-full bg-dark-800 text-dark-100 placeholder-dark-500 rounded-lg px-3 py-2 text-sm border border-dark-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full bg-card text-ink placeholder-ink-muted rounded-lg px-3 py-2 text-sm border border-line-strong focus:outline-none focus:ring-1 focus:ring-brand"
           />
         </div>
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={handleClose}
-            className="px-4 py-2 text-sm text-dark-400 hover:text-dark-100 transition-colors"
+            className="px-4 py-2 text-sm text-ink-secondary hover:text-ink transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={creating || !name.trim()}
-            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-brand text-white text-sm font-medium rounded-lg hover:bg-brand-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {creating ? 'Creating...' : 'Create Channel'}
           </button>
